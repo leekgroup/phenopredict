@@ -1,0 +1,14 @@
+Package: phenopredict
+Title: Uses Gene Expression Data to Predict Phenotype Information
+Version: 0.1.0
+Authors@R: person("Shannon", "Ellis", email = "sellis18@jhmi.edu.com", 
+	role = c("aut", "cre"))
+Description: This package utilizes data within [recount](https://jhubiostatistics.shinyapps.io/recount/) to predict biological phenotypes of interest (i.e. sex, tissue type) as well as technical phenotypes of interest (ie polyA+ vs ribominus, miRNA vs total RNA). 
+Depends: R (>= 3.3.1)
+Date: 2016-12-21
+License: GPL-2
+LazyData: true
+VignetteBuilder: knitr
+Suggests: 
+	knitr, 
+	BiocStyle

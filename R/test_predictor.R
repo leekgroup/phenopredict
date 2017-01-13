@@ -27,6 +27,16 @@
 test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type="factor",predictordata=NULL){	
 	require(minfi)
 
+	 if(is.null(inputdata)) {
+	  	stop('Must specify inputdata to use. This is the output from select_regions()')
+	  }
+	   if(is.null(phenodata)) {
+	  	stop('Must include phenotype file.')
+	  }
+ 	if(is.null(predictordata)) {
+	  	stop('Must specify predictor data to use. This is the output from build_predictor()')
+	  }
+
 	#define possible predictions
 	possibles = levels(droplevels(phenodata[,phenotype]))
 	

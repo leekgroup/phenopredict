@@ -56,67 +56,72 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="TOC">
 <ul>
 <li><a href="#quick-start-to-using-to-phenopredict"><span class="toc-section-number">1</span> Quick start to using to phenopredict</a></li>
-<li><a href="#load-data"><span class="toc-section-number">2</span> Load data</a></li>
-<li><a href="#select-regions"><span class="toc-section-number">3</span> Select regions</a></li>
-<li><a href="#build-predictor"><span class="toc-section-number">4</span> Build predictor</a></li>
-<li><a href="#test-predictor"><span class="toc-section-number">5</span> Test predictor</a></li>
-<li><a href="#extract-data"><span class="toc-section-number">6</span> Extract data</a></li>
-<li><a href="#predict-phenotype"><span class="toc-section-number">7</span> Predict phenotype</a></li>
+<li><a href="#load-libraries"><span class="toc-section-number">2</span> Load libraries</a></li>
+<li><a href="#load-data"><span class="toc-section-number">3</span> Load data</a></li>
+<li><a href="#select-regions"><span class="toc-section-number">4</span> Select regions</a></li>
+<li><a href="#build-predictor"><span class="toc-section-number">5</span> Build predictor</a></li>
+<li><a href="#test-predictor"><span class="toc-section-number">6</span> Test predictor</a></li>
+<li><a href="#extract-data"><span class="toc-section-number">7</span> Extract data</a></li>
+<li><a href="#predict-phenotype"><span class="toc-section-number">8</span> Predict phenotype</a></li>
+<li><a href="#vignette-information"><span class="toc-section-number">9</span> Vignette information</a></li>
 </ul>
 </div>
 
 <div id="quick-start-to-using-to-phenopredict" class="section level1">
 <h1><span class="header-section-number">1</span> Quick start to using to phenopredict</h1>
+</div>
+<div id="load-libraries" class="section level1">
+<h1><span class="header-section-number">2</span> Load libraries</h1>
 <pre class="r"><code>## load libraries
 library('recount')
 library(&quot;devtools&quot;)
 library(&quot;roxygen2&quot;)
 library(&quot;knitr&quot;)
-document(&quot;/users/sellis/packagename&quot;)</code></pre>
+document(&quot;/users/sellis/phenopredict&quot;)</code></pre>
 </div>
 <div id="load-data" class="section level1">
-<h1><span class="header-section-number">2</span> Load data</h1>
-<pre class="r"><code>source(&quot;/dcs01/ajaffe/GTEX/Leek/coverageMatrix/simpleLoad/gtexLoad.R&quot;)
-load(&quot;/users/sellis/phenopredict_old/data/sysdata.rda&quot;)
-load(&quot;/users/sellis/phenopredict_old/data/extdata.R&quot;)   
+<h1><span class="header-section-number">3</span> Load data</h1>
+<pre class="r"><code>load(&quot;/users/sellis/phenopredict/data/extdata.Rda&quot;)   
 #cm, cm_new, regiondata, pheno to run example</code></pre>
 </div>
 <div id="select-regions" class="section level1">
-<h1><span class="header-section-number">3</span> Select regions</h1>
-<p>add installation details</p>
+<h1><span class="header-section-number">4</span> Select regions</h1>
 <p>The first step in building the predictor is selecting the regions that should be used for prediction. This step will require an expression data set (<code>expression</code>) in which your samples are in columns and your expression data are in rows. A corresponding GRanges object (<code>regiondata</code>) is required. The rows of this object shoudl correspond to those in your expression data set. Finally, you will have to provide a phenotype file (<code>phenodata</code>). The rows of this phenotype file will contain the samples included in your expression data set and the columns can include any phenotype information. <code>phenotype</code> specifies the phenotype upon which you want to build the predictor. <code>covariates</code> specifies those covariates you would like to include in the predictor.</p>
 <p>Note: the speed of this step depends on both the number of regions in your <code>expression</code> set AND (even moreso on) the number of levels in your <code>phenotype</code> being predicted.</p>
 <pre class="r"><code>inputdata&lt;-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype=&quot;Sex&quot;, covariates=c(&quot;AGE&quot;,&quot;BMI&quot;),type=&quot;factor&quot;, numRegions=100)</code></pre>
 </div>
 <div id="build-predictor" class="section level1">
-<h1><span class="header-section-number">4</span> Build predictor</h1>
+<h1><span class="header-section-number">5</span> Build predictor</h1>
 <p>After selecting the regions for your phenotype of choice, you’ll have to calculate the coefficient estimates for these regions. This will output the coefficient regions for your selected regions (rows) for each of the categories of your predictor (columns)</p>
 <pre class="r"><code>predictor&lt;-build_predictor(inputdata=inputdata ,phenodata=pheno, phenotype=&quot;Sex&quot;, covariates=c(&quot;AGE&quot;,&quot;BMI&quot;),type=&quot;factor&quot;, numRegions=10)</code></pre>
 </div>
 <div id="test-predictor" class="section level1">
-<h1><span class="header-section-number">5</span> Test predictor</h1>
+<h1><span class="header-section-number">6</span> Test predictor</h1>
 <p>If you want to test the accuracy of your build predictor on data in which the phenotype is known, use predictions_test.</p>
 <pre class="r"><code>predictions_test &lt;-test_predictor(inputdata=inputdata ,phenodata=pheno, phenotype=&quot;Sex&quot;, covariates=c(&quot;AGE&quot;,&quot;BMI&quot;),type=&quot;factor&quot;,predictordata=predictor )
 #get summary of how prediction is doing
 predictions_test$summarized</code></pre>
 <pre><code>##    sites_tested  number_correct percent_correct 
-##      10.0000000    1773.0000000       0.3717761</code></pre>
+##      10.0000000    4512.0000000       0.9461103</code></pre>
 </div>
 <div id="extract-data" class="section level1">
-<h1><span class="header-section-number">6</span> Extract data</h1>
+<h1><span class="header-section-number">7</span> Extract data</h1>
 <p>To calculate the predictions for your chosen phenotype in a new data set, you will have to first extract the coverage matrix for the regions from select_regions() for your new data set. extract_data() supplies this:</p>
 <pre class="r"><code>test_data&lt;-extract_data(expression=cm_new, inputdata=inputdata, predictordata=predictor)</code></pre>
 </div>
 <div id="predict-phenotype" class="section level1">
-<h1><span class="header-section-number">7</span> Predict phenotype</h1>
+<h1><span class="header-section-number">8</span> Predict phenotype</h1>
 <p>Finally, with coefficient estimates calculated and the appropriate regions selected from the test data set, you can now make your predictions!</p>
 <pre class="r"><code>predictions&lt;-predict_pheno(expression= test_data, phenodata=pheno, phenotype=&quot;Sex&quot;,predictordata = predictor)</code></pre>
+</div>
+<div id="vignette-information" class="section level1">
+<h1><span class="header-section-number">9</span> Vignette information</h1>
 <pre class="r"><code>## Time spent creating this report:
 diff(c(startTime, Sys.time()))</code></pre>
-<pre><code>## Time difference of 50.5635 mins</code></pre>
+<pre><code>## Time difference of 28.09391 secs</code></pre>
 <pre class="r"><code>## Date this report was generated
 message(Sys.time())</code></pre>
-<pre><code>## 2017-01-12 20:02:31</code></pre>
+<pre><code>## 2017-01-13 10:10:31</code></pre>
 <pre class="r"><code>## Reproducibility info
 options(width = 120)
 devtools::session_info()</code></pre>
@@ -128,7 +133,7 @@ devtools::session_info()</code></pre>
 ##  language (EN)                                       
 ##  collate  en_US.UTF-8                                
 ##  tz       &lt;NA&gt;                                       
-##  date     2017-01-12</code></pre>
+##  date     2017-01-13</code></pre>
 <pre><code>## Packages ---------------------------------------------------------------------------------------------------------------</code></pre>
 <pre><code>##  package              * version  date       source        
 ##  acepack                1.4.1    2016-10-29 CRAN (R 3.3.1)
@@ -226,11 +231,11 @@ devtools::session_info()</code></pre>
 ##  rprojroot              1.1      2016-10-29 CRAN (R 3.3.1)
 ##  Rsamtools              1.26.1   2016-10-26 Bioconductor  
 ##  RSQLite                1.1-2    2017-01-08 CRAN (R 3.3.1)
-##  rstudioapi             0.6      2016-06-27 CRAN (R 3.3.1)
 ##  rtracklayer            1.34.1   2016-12-15 Bioconductor  
 ##  S4Vectors            * 0.12.1   2016-12-15 Bioconductor  
 ##  scales                 0.4.1    2016-11-09 CRAN (R 3.3.0)
 ##  siggenes               1.48.0   2016-10-26 Bioconductor  
+##  stringi                1.1.2    2016-10-01 CRAN (R 3.3.1)
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 14 rows ]</code></pre>
 <p>Code for creating the vignette</p>
 <pre class="r"><code>## Create the vignette

@@ -22,11 +22,20 @@ extract_data <- function(expression=NULL, inputdata=NULL, predictordata=NULL){
 	##########
 	## first, some checks
 		##ADD thes
-	
+	 if(is.null(expression)) {
+	  	stop('Expression Data must be supplied.')
+	  }
+	   if(is.null(inputdata)) {
+	  	stop('Must specify inputdata to use. This is the output from select_regions()')
+	  }
+ 	if(is.null(predictordata)) {
+	  	stop('Must specify predictor data to use. This is the output from build_predictor()')
+	  }
+
 	yGene=expression
 
 	#extract appropriate regions
-	covmat_test<-yGene[unique(inputdata$regions$index),]
+	covmat_test<-yGene[unique(inputdata$regioninfo$index),]
 	covmat_test = covmat_test[predictor$trainingProbes,]
 	
 	return(covmat_test)

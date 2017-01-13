@@ -32,6 +32,13 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	 if(is.null(type)) {
 	  	stop('Must specify which type of phenotype you are interested in predicting ("factor","binary","numeric")')
 	  }
+	 if(is.null(regiondata)) {
+	  	stop('Must include a GRanges object corresponding to the regions included in expession')
+	  }
+ 	 if(is.null(expression)) {
+	  	stop('Expression Data must be supplied.')
+	  }
+
 	  if(!(type %in% c('factor', 'binary', 'factor'))) {
 	  	stop('Phenotype you are predicting must be either "factor","binary", or "numeric"')
 	  }
@@ -82,16 +89,16 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		trainingProbes <- unique(unlist(cellSpecificList))
 
 		covmat = yGene[trainingProbes,]
-		regioninfo = regiondata[trainingProbes]
+		regiondata = regiondata[trainingProbes]
 
 		index = c(as.numeric(trainingProbes))
 		type=c(rep(c(phenotype),times=c(length(trainingProbes))))
-		chr = seqnames(regioninfo)
+		chr = seqnames(regiondata)
 		
-		regions = data.frame(chr=chr,type=type, 
+		regioninfo = data.frame(chr=chr,type=type, 
 		                  index=index)
 
-		res <- list(regions=regions, covmat=covmat, regioninfo=regioninfo )
+		res <- list(regiondata=regiondata, covmat=covmat, regioninfo=regioninfo )
 		return(res)
 
 

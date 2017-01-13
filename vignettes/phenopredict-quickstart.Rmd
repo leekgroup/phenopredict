@@ -16,6 +16,7 @@ Quick start to using to `r ('phenopredict')`
 ## Track time spent on making the vignette
 startTime <- Sys.time()
 ```
+# Load libraries
 
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
@@ -23,19 +24,16 @@ library('recount')
 library("devtools")
 library("roxygen2")
 library("knitr")
-document("/users/sellis/packagename")
+document("/users/sellis/phenopredict")
 ```
 # Load data
 
 ```{r 'load-data', message = FALSE, warning = FALSE}
-source("/dcs01/ajaffe/GTEX/Leek/coverageMatrix/simpleLoad/gtexLoad.R")
-load("/users/sellis/phenopredict_old/data/sysdata.rda")
-load("/users/sellis/phenopredict_old/data/extdata.R")   
+load("/users/sellis/phenopredict/data/extdata.Rda")   
 #cm, cm_new, regiondata, pheno to run example
 ```
 
 # Select regions
-add installation details
 
 The first step in building the predictor is selecting the regions that should be used for prediction. This step will require an expression data set (`expression`) in which your samples are in columns and your expression data are in rows. A corresponding GRanges object (`regiondata`) is required. The rows of this object shoudl correspond to those in your expression data set. Finally, you will have to provide a phenotype file (`phenodata`). The rows of this phenotype file will contain the samples included in your expression data set and the columns can include any phenotype information. `phenotype` specifies the phenotype upon which you want to build the predictor. `covariates` specifies those covariates you would like to include in the predictor. 
 
@@ -46,6 +44,7 @@ inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno,
 ```
 
 # Build predictor
+
 After selecting the regions for your phenotype of choice, you'll have to calculate the coefficient estimates for these regions. This will output the coefficient regions for your selected regions (rows) for each of the categories of your predictor (columns)
 
 ```{r 'build-predictor', message = FALSE, warning = FALSE}
@@ -77,6 +76,7 @@ Finally, with coefficient estimates calculated and the appropriate regions selec
 predictions<-predict_pheno(expression= test_data, phenodata=pheno, phenotype="Sex",predictordata = predictor)
 ```
 
+# Vignette information
 
 ```{r reproducibility}
 ## Time spent creating this report:
@@ -95,11 +95,11 @@ Code for creating the vignette
 ```{r createVignette, eval=FALSE}
 ## Create the vignette
 library('rmarkdown')
-system.time(render('recount-quickstart.Rmd', 'BiocStyle::html_document'))
+system.time(render('phenopredict-quickstart.Rmd', 'BiocStyle::html_document'))
 
 ## Extract the R code
 library('knitr')
-knit('recount-quickstart.Rmd', tangle = TRUE)
+knit('phenotype-quickstart.Rmd', tangle = TRUE)
 ```
 
 

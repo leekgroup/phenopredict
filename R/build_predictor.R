@@ -22,13 +22,19 @@
 #' coefEsts<-build_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="SMTS", covariates=c("Sex","AGE","BMI"),type="factor", numRegions=10)
 
 
-build_predictor <- function(inputdata=inputdata ,phenodata=pheno, phenotype="SMTS", covariates=c("SMGEBTCHT","SMNABTCHT","Sex","AGE","BMI"),type=NULL, numRegions=10){
+build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL, numRegions=10){
 	require(limma)
 	require(GenomicRanges)
 
 	## first, some checks
 	 if(is.null(type)) {
 	  	stop('Must specify which type of phenotype you are interested in predicting ("factor","binary","numeric")')
+	  }
+	  if(is.null(inputdata)) {
+	  	stop('Must specify inputdata to use. This is the output from select_regions()')
+	  }
+ 	 if(is.null(phenodata)) {
+	  	stop('Must include phenotype file.')
 	  }
 	  if(!(type %in% c('factor', 'binary', 'factor'))) {
 	  	stop('Phenotype you are predicting must be either "factor","binary", or "numeric"')

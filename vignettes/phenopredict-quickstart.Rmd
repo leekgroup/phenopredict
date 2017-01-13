@@ -21,16 +21,17 @@ startTime <- Sys.time()
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
 library('recount')
-library("devtools")
-library("roxygen2")
-library("knitr")
-document("/users/sellis/phenopredict")
+library('devtools')
+library('roxygen2"')
+library('knitr')
+document('/users/sellis/phenopredict')
+library('phenopredict')
 ```
 # Load data
 
 ```{r 'load-data', message = FALSE, warning = FALSE}
-load("/users/sellis/phenopredict/data/extdata.Rda")   
-#cm, cm_new, regiondata, pheno to run example
+data(sysdata, package='phenopredict')   
+#loads cm, cm_new, regiondata, pheno to run example
 ```
 
 # Select regions

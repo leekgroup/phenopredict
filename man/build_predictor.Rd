@@ -4,9 +4,8 @@
 \alias{build_predictor}
 \title{Uses output from select_regions() to build the predictor}
 \usage{
-build_predictor(inputdata = inputdata, phenodata = pheno,
-  phenotype = "SMTS", covariates = c("SMGEBTCHT", "SMNABTCHT", "Sex", "AGE",
-  "BMI"), type = NULL, numRegions = 10)
+build_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
+  covariates = NULL, type = NULL, numRegions = 10)
 }
 \arguments{
 \item{inputdata}{output from select_regions() \code{inputdata}}

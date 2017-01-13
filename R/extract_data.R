@@ -2,7 +2,7 @@
 #' 
 #' This function extracts regions of interest from data set on which you want to make predictions.
 #'
-#' @param exoression expression data set from which to extract coverage data \code{expression}
+#' @param expression expression data set from which to extract coverage data \code{expression}
 #' @param inputdata object output from select_regions() \code{inputdata}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'

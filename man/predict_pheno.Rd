@@ -10,7 +10,8 @@ predict_pheno(expression = NULL, phenodata = NULL, phenotype = NULL,
 \arguments{
 \item{expression}{Expression data from test set \code{expression}}
 
-\item{phenodata}{data set with phenotype information; samples in rows, variables in columns \code{phenodata}}
+\item{phenodata}{data set with phenotype information; samples in rows, 
+variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
 
@@ -23,9 +24,6 @@ predicted A vector of predicted phenoyptes
 This function outputs predictions for phenotype of 
 interest using selected regions upon which predictor 
 has been built
-}
-\examples{
-predictions<-predict_pheno(expression=GTEx_test_data, phenodata=pheno, phenotype="SMTS",predictordata = predictor)
 }
 \keyword{data}
 \keyword{phenotype,}

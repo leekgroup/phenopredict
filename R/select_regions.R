@@ -1,4 +1,5 @@
-#' Selects regions from prediction set to be used to build the predctor for a phenotype of interest
+#' Selects regions from prediction set to be used to build the predctor for a 
+#' phenotype of interest
 #' 
 #' This function takes phenotype of interest (sex, tissue type, etc.)
 #' input by the user and uses a linear model (accounting for covariates, 
@@ -6,27 +7,32 @@
 #' phenotype of interest. These regions are then used downstream for 
 #' prediction. 
 #'
-#' @param expression expression data where regions are in rows and samples are in columns \code{expression}
+#' @param expression expression data where regions are in rows and samples are 
+#' in columns \code{expression}
 #' @param regiondata A GRanges object in which  \code{regiondata}
-#' @param phenodata phenotype data with samples in rows and corresponding phenotype information in columns  \code{phenodata}
+#' @param phenodata phenotype data with samples in rows and corresponding 
+#' phenotype 
+#' information in columns  \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
-#' @param type The class of the phenotype of interest (numeric, binary, factor) \code{type}
+#' @param type The class of the phenotype of interest (numeric, binary, factor)
+#' \code{type}
 #' @param covariates Which covariates to include in model \code{covariates}
-#' @param numRegions The number of regions per class of variable of interest to pull out from each chromosome (default: 100) \code{numRegions}
+#' @param numRegions The number of regions per class of variable of interest 
+#' to pull out from each chromosome (default: 100) \code{numRegions}
 #'
-#' @return res The selected regions, the coverage matrix, and the region info to be used for prediction
+#' @return res The selected regions, the coverage matrix, and the region info 
+#' to be used for prediction
 #'
 #' @keywords phenotype, prediction, selection
 #'
 #' @export
 #' 
-#' @examples
-#' inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="Sex", covariates=c("AGE","BMI"),type="factor", numRegions=100)
 
 select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type="factor", numRegions=100){
 
 	require(limma)
 	require(GenomicRanges)
+	require(stats)
 
 	## first, some checks
 	 if(is.null(type)) {

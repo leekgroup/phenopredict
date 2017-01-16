@@ -1,30 +1,35 @@
 #' Uses output from select_regions() to build the predictor   
 #' 
-#' This function takes the output from select_regions() and builds the phenotype
-#' predictor to be used for phenotype prediction in a new data set. This function  
-#' outputs the fits (coefficient estimates, `coefEsts`) from the model for the 
-#' selectied regions as well as the rows selected (`trainingProbes`) from the input data.  
+#' This function takes the output from select_regions() and builds the 
+#' phenotype predictor to be used for phenotype prediction in a new 
+#' data set. This function outputs the fits (coefficient estimates, `coefEsts`)
+#' from the model for the selectied regions as well as the rows selected 
+#' (`trainingProbes`) from the input data.  
 #'
 #' @param inputdata output from select_regions() \code{inputdata}
-#' @param phenodata data set with phenotype information; samples in rows, variables in columns \code{phenodata}
+#' @param phenodata data set with phenotype information; samples in rows, 
+#' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
-#' @param type The class of the phenotype of interest (numeric, binary, factor) \code{type}
+#' @param type The class of the phenotype of interest (numeric, binary, factor 
+#'\code{type}
 #' @param covariates Which covariates to include in model \code{covariates}
-#' @param numRegions The number of regions per class of variable of interest to pull out from each chromosome (default: 10) \code{numRegions}
+#' @param numRegions The number of regions per class of variable of interest 
+#' to pull out from each chromosome (default: 10) \code{numRegions}
 #'
-#' @return res An n x m data.frame of coefficient estimates and region indices for each of the regions included from select_regions()
+#' @return res An n x m data.frame of coefficient estimates and region indices 
+#' for each of the regions included from select_regions()
 #'
 #' @keywords phenotype, prediction, coefficient estimates
 #'
 #' @export
 #' 
-#' @examples
-#' coefEsts<-build_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="SMTS", covariates=c("Sex","AGE","BMI"),type="factor", numRegions=10)
 
 
 build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL, numRegions=10){
-	require(limma)
 	require(GenomicRanges)
+	require(limma)
+	require(stats)
+	require(minfi)
 
 	## first, some checks
 	 if(is.null(type)) {
@@ -99,7 +104,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	message("Calculating Coefficients")
 	p=yGene
 	probeList=cellSpecificList
-	trainingProbes <<- as.numeric(unique(unlist(probeList)))
+	trainingProbes <- as.numeric(unique(unlist(probeList)))
 
 	## okay, now go ahead...
 	p <- p[trainingProbes, ]
@@ -109,7 +114,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	pd[,phenotype] <- factor(pd[,phenotype])
 	names(pMeans) <- pd[,phenotype]
 	form <- as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(pd[,phenotype])),
-	    collapse = "+")))
+	    collapse = "+"))) 
 	phenoDF <- as.data.frame(model.matrix(~pd[,phenotype] - 1))
 	colnames(phenoDF) <- sub("^pd[,phenotype]", "", colnames(phenoDF))
 	if (ncol(phenoDF) == 2) {

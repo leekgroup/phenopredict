@@ -10,13 +10,15 @@ test_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
 \arguments{
 \item{inputdata}{output from select_regions() \code{inputdata}}
 
-\item{phenodata}{data set with phenotype information; samples in rows, variables in columns \code{phenodata}}
+\item{phenodata}{data set with phenotype information; samples in rows, 
+variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
 
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
-\item{type}{The class of the phenotype of interest (numeric, binary, factor) \code{type}}
+\item{type}{The class of the phenotype of interest (numeric, binary, factor)
+\code{type}}
 
 \item{predictordata}{object output from build_predictor \code{predictordata}}
 }
@@ -29,9 +31,6 @@ build_predictor() and the coefficient estimates from
 build_predictor() for phenotype prediction. The known 
 phenotypes are also input for comparison and 
 asseessment of predictor accuracy.
-}
-\examples{
-predictions_test <-test_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="Sex", covariates=c("AGE","BMI"),type="factor",predictordata=predictor )
 }
 \keyword{phenotype,}
 \keyword{prediction,}

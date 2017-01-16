@@ -22,7 +22,7 @@ startTime <- Sys.time()
 ## load libraries
 library('recount')
 library('devtools')
-library('roxygen2"')
+library('roxygen2')
 library('knitr')
 document('/users/sellis/phenopredict')
 library('phenopredict')

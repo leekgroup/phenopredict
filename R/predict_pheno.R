@@ -5,7 +5,8 @@
 #' has been built
 #'
 #' @param expression Expression data from test set \code{expression}
-#' @param phenodata data set with phenotype information; samples in rows, variables in columns \code{phenodata}
+#' @param phenodata data set with phenotype information; samples in rows, 
+#' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'
@@ -14,9 +15,8 @@
 #' @keywords phenotype, prediction, data set
 #'
 #' @export
-#' 
-#' @examples
-#' predictions<-predict_pheno(expression=GTEx_test_data, phenodata=pheno, phenotype="SMTS",predictordata = predictor)
+#'
+
 
 predict_pheno <- function(expression=NULL, phenodata=NULL, phenotype=NULL , predictordata = NULL){	
 	require(minfi)

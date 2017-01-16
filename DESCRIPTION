@@ -13,8 +13,30 @@ Date: 2016-12-21
 License: GPL-2
 LazyData: no
 VignetteBuilder: knitr
+Imports:
+  BiocStyle,
+  devtools,
+  GenomeInfoDb,
+  GenomicRanges,
+  knitr,
+  limma,
+  minfi,
+  roxygen2,
+  stats,
+  testthat,
+  tidyverse,
+  recount
 Suggests:
-    knitr,
-    BiocStyle,
-    testthat
+  BiocStyle,
+  devtools,
+  GenomeInfoDb,
+  GenomicRanges,
+  knitr,
+  limma,
+  minfi,
+  roxygen2,
+  stats,
+  testthat,
+  tidyverse,
+  recount
 RoxygenNote: 5.0.1

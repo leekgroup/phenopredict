@@ -2,28 +2,26 @@
 % Please edit documentation in R/merge_input.R
 \name{merge_input}
 \alias{merge_input}
-\title{Uses output from select_regions() to merge output before building the predictor}
+\title{Uses output from select_regions() to merge output before building the 
+predictor}
 \usage{
 merge_input(inputdata_list = NULL)
 }
 \arguments{
-\item{inputdata_list}{list out output objects from select_regions() \code{inputdata_list}}
+\item{inputdata_list}{list out output objects from select_regions() 
+\code{inputdata_list}}
 }
 \value{
 inputdata merged inputdata across multiple runs of select_regions()
 }
 \description{
 This function takes the output from multiple executions of select_regions() 
-and merges the output before building and running the predictor. Objects output 
-are the merged output from select_regions but contain the same objects.
+and merges the output before building and running the predictor. Objects
+output are the merged output from select_regions but contain the same 
+objects.
 }
-\examples{
-coefEsts<-merge_input(inputdata_list=list(inputdata,inputdata2)
-}
-\keyword{'}
-\keyword{,}
 \keyword{expression}
-\keyword{merge}
+\keyword{merge,}
 \keyword{phenotype,}
 \keyword{prediction,}
 

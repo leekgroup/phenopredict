@@ -1,30 +1,33 @@
 #' Loads GTEx data to build predictor by chromosome  
 #' 
-#' This function takes phenotype of interest (sex, tissue type, etc.)
+#' This function (writtien by Leo Collado-Torres and Andrew Jaffee)
+#' takes phenotype of interest (sex, tissue type, etc.)
 #' input by the user and uses a linear model (accounting for covariates, 
 #' if provided) to select those expressed regions that best predict the 
 #' phenotype of interest. These regions are then used downstream for 
 #' prediction. 
 #'
-#' @param chr chromosome to load (use UCSC naming scheme, ie: 'chr1') \code{chr}
-#' @param minoverlap which output of annotateRegions() to load (1, 8, 20) \code{minoverlap}
+#' @param chr chromosome to load (use UCSC naming scheme, ie: 'chr1') 
+#' \code{chr}
+#' @param minoverlap which output of annotateRegions() to load (1, 8, 20) 
+#' \code{minoverlap}
 #' @param chr_db  input database to use (ucsc, ensembl, gencode) \code{chr_db}
 #' @param db database to use (ucsc, ensembl, gencode) \code{db}
-#' @param phenoSize Specifies full or 'small' phenotype data to load \code{phenoSize}
-#' @param help  specifies whether to surpress printing explanation message \code{help}
+#' @param phenoSize Specifies full or 'small' phenotype data to load 
+#' \code{phenoSize}
+#' @param help  specifies whether to surpress printing explanation message 
+#' \code{help}
 #' @param disk  either 'dcs' or 'dcl' \code{disk}
 #'
-#' @return output The GTEx data for the chromosome specified by input
+#' @return res The GTEx data for the chromosome specified by input
 #'
 #' @keywords GTEx, expression, expressed region
-#' 
-#' @examples
-#' chrs = c("X","Y",1:22)
-#' chrname=paste0("chr",chrs[i])
-#' dat = gtexLoad(chrname)
+
 
 
 gtexLoad <- function(chr = NULL, minoverlap = 1, chr_db = 'ucsc', db = 'ucsc', phenoSize = 'small', help = TRUE, disk = 'dcl') {
+    require(GenomicRanges)
+    require(GenomeInfoDb)
 
     ## added as.character twice before since which wasn't working using Jaffe's original function...when used in another function
     ## as.character(seqnames(regs_noEBV)
@@ -118,20 +121,3 @@ gtexLoad <- function(chr = NULL, minoverlap = 1, chr_db = 'ucsc', db = 'ucsc', p
     return(res)
         
 }
-
-## Test it
-if(FALSE) {
-    gtexLoad()
-    testEBV <- gtexLoad('chrEBV')
-    stopifnot(is.null(testEBV$annotatedRegions))
-    test <- gtexLoad('chrY', db = 'ensembl')
-    lapply(test$annotatedRegions, head)
-    test2 <- gtexLoad('Y', db = 'ensembl', chr_db = 'ensembl')
-    stopifnot(identical(test, test2))
-    nrow(test$coverageMatrix) == test$chrInfo$nRegions
-    ncol(test$coverageMatrix) == nrow(test$pheno)
-    testDCS <- gtexLoad('Y', db = 'ensembl', chr_db = 'ensembl', disk = 'dcs')
-    stopifnot(identical(test2$coverageMatrix, testDCS$coverageMatrix))
-    stopifnot(identical(test2$annotatedRegions, testDCS$annotatedRegions))
-}
-

@@ -8,9 +8,11 @@
 #' asseessment of predictor accuracy.
 #'
 #' @param inputdata output from select_regions() \code{inputdata}
-#' @param phenodata data set with phenotype information; samples in rows, variables in columns \code{phenodata}
+#' @param phenodata data set with phenotype information; samples in rows, 
+#' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
-#' @param type The class of the phenotype of interest (numeric, binary, factor) \code{type}
+#' @param type The class of the phenotype of interest (numeric, binary, factor)
+#' \code{type}
 #' @param covariates Which covariates to include in model \code{covariates}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'
@@ -20,8 +22,7 @@
 #'
 #' @export
 #' 
-#' @examples
-#' predictions_test <-test_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="Sex", covariates=c("AGE","BMI"),type="factor",predictordata=predictor )
+
 	
 
 test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type="factor",predictordata=NULL){	

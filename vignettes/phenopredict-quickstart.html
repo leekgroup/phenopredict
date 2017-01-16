@@ -74,15 +74,19 @@ document.addEventListener("DOMContentLoaded", function() {
 <h1><span class="header-section-number">2</span> Load libraries</h1>
 <pre class="r"><code>## load libraries
 library('recount')
-library(&quot;devtools&quot;)
-library(&quot;roxygen2&quot;)
-library(&quot;knitr&quot;)
-document(&quot;/users/sellis/phenopredict&quot;)</code></pre>
+library('devtools')
+library('roxygen2')
+library('knitr')
+document('/users/sellis/phenopredict')</code></pre>
+<pre><code>## Writing inputdata.Rd
+## Writing predictor.Rd
+## Writing extract_data.Rd</code></pre>
+<pre class="r"><code>library('phenopredict')</code></pre>
 </div>
 <div id="load-data" class="section level1">
 <h1><span class="header-section-number">3</span> Load data</h1>
-<pre class="r"><code>load(&quot;/users/sellis/phenopredict/data/extdata.Rda&quot;)   
-#cm, cm_new, regiondata, pheno to run example</code></pre>
+<pre class="r"><code>data(sysdata, package='phenopredict')   
+#loads cm, cm_new, regiondata, pheno to run example</code></pre>
 </div>
 <div id="select-regions" class="section level1">
 <h1><span class="header-section-number">4</span> Select regions</h1>
@@ -118,10 +122,10 @@ predictions_test$summarized</code></pre>
 <h1><span class="header-section-number">9</span> Vignette information</h1>
 <pre class="r"><code>## Time spent creating this report:
 diff(c(startTime, Sys.time()))</code></pre>
-<pre><code>## Time difference of 28.09391 secs</code></pre>
+<pre><code>## Time difference of 10.97282 secs</code></pre>
 <pre class="r"><code>## Date this report was generated
 message(Sys.time())</code></pre>
-<pre><code>## 2017-01-13 10:10:31</code></pre>
+<pre><code>## 2017-01-15 16:37:01</code></pre>
 <pre class="r"><code>## Reproducibility info
 options(width = 120)
 devtools::session_info()</code></pre>
@@ -133,7 +137,7 @@ devtools::session_info()</code></pre>
 ##  language (EN)                                       
 ##  collate  en_US.UTF-8                                
 ##  tz       &lt;NA&gt;                                       
-##  date     2017-01-13</code></pre>
+##  date     2017-01-15</code></pre>
 <pre><code>## Packages ---------------------------------------------------------------------------------------------------------------</code></pre>
 <pre><code>##  package              * version  date       source        
 ##  acepack                1.4.1    2016-10-29 CRAN (R 3.3.1)
@@ -157,6 +161,7 @@ devtools::session_info()</code></pre>
 ##  cluster                2.0.5    2016-10-08 CRAN (R 3.3.1)
 ##  codetools              0.2-15   2016-10-05 CRAN (R 3.3.1)
 ##  colorspace             1.3-2    2016-12-14 CRAN (R 3.3.1)
+##  crayon                 1.3.2    2016-06-28 CRAN (R 3.3.0)
 ##  data.table             1.10.0   2016-12-03 CRAN (R 3.3.1)
 ##  DBI                    0.5-1    2016-09-10 CRAN (R 3.3.1)
 ##  derfinder              1.8.0    2016-10-26 Bioconductor  
@@ -235,16 +240,15 @@ devtools::session_info()</code></pre>
 ##  S4Vectors            * 0.12.1   2016-12-15 Bioconductor  
 ##  scales                 0.4.1    2016-11-09 CRAN (R 3.3.0)
 ##  siggenes               1.48.0   2016-10-26 Bioconductor  
-##  stringi                1.1.2    2016-10-01 CRAN (R 3.3.1)
-##  [ reached getOption(&quot;max.print&quot;) -- omitted 14 rows ]</code></pre>
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 15 rows ]</code></pre>
 <p>Code for creating the vignette</p>
 <pre class="r"><code>## Create the vignette
 library('rmarkdown')
-system.time(render('recount-quickstart.Rmd', 'BiocStyle::html_document'))
+system.time(render('phenopredict-quickstart.Rmd', 'BiocStyle::html_document'))
 
 ## Extract the R code
 library('knitr')
-knit('recount-quickstart.Rmd', tangle = TRUE)</code></pre>
+knit('phenotype-quickstart.Rmd', tangle = TRUE)</code></pre>
 </div>
 
 

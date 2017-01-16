@@ -7,20 +7,20 @@
 extract_data(expression = NULL, inputdata = NULL, predictordata = NULL)
 }
 \arguments{
+\item{expression}{expression data set from which to extract coverage data 
+\code{expression}}
+
 \item{inputdata}{object output from select_regions() \code{inputdata}}
 
 \item{predictordata}{object output from build_predictor \code{predictordata}}
-
-\item{exoression}{expression data set from which to extract coverage data \code{expression}}
 }
 \value{
-comat_test An n x m data.frame of the selected regions from the data set specified by `expression`
+comat_test An n x m data.frame of the selected regions from the 
+data set specified by `expression`
 }
 \description{
-This function extracts regions of interest from data set on which you want to make predictions.
-}
-\examples{
-testdata <-extract_data(expression=cm_new, inputdata=inputdata, predictordata=predictor)
+This function extracts regions of interest from data set on which you want 
+to make predictions.
 }
 \keyword{data}
 \keyword{phenotype,}

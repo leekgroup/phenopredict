@@ -10,27 +10,29 @@ build_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
 \arguments{
 \item{inputdata}{output from select_regions() \code{inputdata}}
 
-\item{phenodata}{data set with phenotype information; samples in rows, variables in columns \code{phenodata}}
+\item{phenodata}{data set with phenotype information; samples in rows, 
+variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
 
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
-\item{type}{The class of the phenotype of interest (numeric, binary, factor) \code{type}}
+\item{type}{The class of the phenotype of interest (numeric, binary, factor 
+\code{type}}
 
-\item{numRegions}{The number of regions per class of variable of interest to pull out from each chromosome (default: 10) \code{numRegions}}
+\item{numRegions}{The number of regions per class of variable of interest 
+to pull out from each chromosome (default: 10) \code{numRegions}}
 }
 \value{
-res An n x m data.frame of coefficient estimates and region indices for each of the regions included from select_regions()
+res An n x m data.frame of coefficient estimates and region indices 
+for each of the regions included from select_regions()
 }
 \description{
-This function takes the output from select_regions() and builds the phenotype
-predictor to be used for phenotype prediction in a new data set. This function  
-outputs the fits (coefficient estimates, `coefEsts`) from the model for the 
-selectied regions as well as the rows selected (`trainingProbes`) from the input data.
-}
-\examples{
-coefEsts<-build_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="SMTS", covariates=c("Sex","AGE","BMI"),type="factor", numRegions=10)
+This function takes the output from select_regions() and builds the 
+phenotype predictor to be used for phenotype prediction in a new 
+data set. This function outputs the fits (coefficient estimates, `coefEsts`)
+from the model for the selectied regions as well as the rows selected 
+(`trainingProbes`) from the input data.
 }
 \keyword{coefficient}
 \keyword{estimates}

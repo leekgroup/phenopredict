@@ -8,34 +8,34 @@ gtexLoad(chr = NULL, minoverlap = 1, chr_db = "ucsc", db = "ucsc",
   phenoSize = "small", help = TRUE, disk = "dcl")
 }
 \arguments{
-\item{chr}{chromosome to load (use UCSC naming scheme, ie: 'chr1') \code{chr}}
+\item{chr}{chromosome to load (use UCSC naming scheme, ie: 'chr1') 
+\code{chr}}
 
-\item{minoverlap}{which output of annotateRegions() to load (1, 8, 20) \code{minoverlap}}
+\item{minoverlap}{which output of annotateRegions() to load (1, 8, 20) 
+\code{minoverlap}}
 
 \item{chr_db}{input database to use (ucsc, ensembl, gencode) \code{chr_db}}
 
 \item{db}{database to use (ucsc, ensembl, gencode) \code{db}}
 
-\item{phenoSize}{Specifies full or 'small' phenotype data to load \code{phenoSize}}
+\item{phenoSize}{Specifies full or 'small' phenotype data to load 
+\code{phenoSize}}
 
-\item{help}{specifies whether to surpress printing explanation message \code{help}}
+\item{help}{specifies whether to surpress printing explanation message 
+\code{help}}
 
 \item{disk}{either 'dcs' or 'dcl' \code{disk}}
 }
 \value{
-output The GTEx data for the chromosome specified by input
+res The GTEx data for the chromosome specified by input
 }
 \description{
-This function takes phenotype of interest (sex, tissue type, etc.)
+This function (writtien by Leo Collado-Torres and Andrew Jaffee)
+takes phenotype of interest (sex, tissue type, etc.)
 input by the user and uses a linear model (accounting for covariates, 
 if provided) to select those expressed regions that best predict the 
 phenotype of interest. These regions are then used downstream for 
 prediction.
-}
-\examples{
-chrs = c("X","Y",1:22)
-chrname=paste0("chr",chrs[i])
-dat = gtexLoad(chrname)
 }
 \keyword{GTEx,}
 \keyword{expressed}

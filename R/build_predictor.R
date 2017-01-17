@@ -16,7 +16,7 @@
 #' @param numRegions The number of regions per class of variable of interest 
 #' to pull out from each chromosome (default: 10) \code{numRegions}
 #'
-#' @return res An n x m data.frame of coefficient estimates and region indices 
+#' @return An n x m data.frame of coefficient estimates and region indices 
 #' for each of the regions included from select_regions()
 #'
 #' @keywords phenotype, prediction, coefficient estimates

@@ -23,7 +23,7 @@ variables in columns \code{phenodata}}
 \item{predictordata}{object output from build_predictor \code{predictordata}}
 }
 \value{
-res #####
+list of actual and predicted phenotype, and summarization of output
 }
 \description{
 This function takes the expression data input to 

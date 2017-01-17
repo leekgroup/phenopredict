@@ -10,7 +10,7 @@
 #' @param phenotype phenotype of interest \code{phenotype}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'
-#' @return  predicted A vector of predicted phenoyptes
+#' @return A vector of predicted phenoyptes
 #'
 #' @keywords phenotype, prediction, data set
 #'

@@ -18,7 +18,7 @@ variables in columns \code{phenodata}}
 \item{predictordata}{object output from build_predictor \code{predictordata}}
 }
 \value{
-predicted A vector of predicted phenoyptes
+A vector of predicted phenoyptes
 }
 \description{
 This function outputs predictions for phenotype of 

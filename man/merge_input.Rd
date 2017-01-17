@@ -12,7 +12,7 @@ merge_input(inputdata_list = NULL)
 \code{inputdata_list}}
 }
 \value{
-inputdata merged inputdata across multiple runs of select_regions()
+merged inputdata across multiple runs of select_regions()
 }
 \description{
 This function takes the output from multiple executions of select_regions() 

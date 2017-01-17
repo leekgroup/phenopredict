@@ -24,7 +24,7 @@ variables in columns \code{phenodata}}
 to pull out from each chromosome (default: 10) \code{numRegions}}
 }
 \value{
-res An n x m data.frame of coefficient estimates and region indices 
+An n x m data.frame of coefficient estimates and region indices 
 for each of the regions included from select_regions()
 }
 \description{

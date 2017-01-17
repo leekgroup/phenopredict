@@ -20,7 +20,7 @@
 #' @param numRegions The number of regions per class of variable of interest 
 #' to pull out from each chromosome (default: 100) \code{numRegions}
 #'
-#' @return res The selected regions, the coverage matrix, and the region info 
+#' @return  The selected regions, the coverage matrix, and the region info 
 #' to be used for prediction
 #'
 #' @keywords phenotype, prediction, selection

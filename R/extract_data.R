@@ -34,11 +34,33 @@ extract_data <- function(expression=NULL, inputdata=NULL, predictordata=NULL){
 	  	stop('Must specify predictor data to use. This is the output from build_predictor()')
 	  }
 
-	yGene=expression
+	  #define function to extract regions when more than one input file supplied
+	  getexp <- function(x,y){
+	  				out<-x[y$regioninfo$index,]
+	  				return(out)
+	  			}
+	#if we're extracting over multiple input objects (aka if you had to use merge_input(), look here
+	  if(is.list(expression)){
+	  		if(!is.list(inputdata)) {
+	  			stop('If >1 expression file is input, inputdata must also be a list.')
+	  		}
+	  		#extract regions from each expression data set before merging [using inputdata$regioninfo$index]
+	  		Map(getexp,expression,inputdata) -> tmp
+	  		#combine across dataframes
+	  		ldply(tmp, data.frame) -> covmat_test
+	#but if you only have one inputdata, it's pretty straightforward, and look here
+	 }else{
+		yGene=expression
 
-	#extract appropriate regions
-	covmat_test<-yGene[unique(inputdata$regioninfo$index),]
+		#extract appropriate regions
+		covmat_test<-yGene[unique(inputdata$regioninfo$index),]
+		
+	}
+	#either way, let's just pull out the regions we actually want to use to build the predictor
 	covmat_test = covmat_test[predictor$trainingProbes,]
-	
 	return(covmat_test)
 }
+
+
+
+

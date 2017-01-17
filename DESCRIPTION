@@ -3,6 +3,7 @@ Title: Uses Gene Expression Data to Predict Phenotype Information
 Version: 0.1.0
 Authors@R: person("Shannon", "Ellis", email = "sellis18@jhmi.edu.com", 
 	role = c("aut", "cre"))
+Date: 2017-01-16
 Description: This package utilizes data within [recount](https://
     jhubiostatistics.shinyapps.io/recount/) to predict biological phenotypes of
     interest (i.e. sex, tissue type) as well as technical phenotypes of interest (ie
@@ -14,14 +15,10 @@ License: GPL-2
 LazyData: no
 VignetteBuilder: knitr
 Imports:
-  BiocStyle,
-  devtools,
   GenomeInfoDb,
   GenomicRanges,
-  knitr,
   limma,
   minfi,
-  roxygen2,
   stats,
   testthat,
   tidyverse,
@@ -29,14 +26,6 @@ Imports:
 Suggests:
   BiocStyle,
   devtools,
-  GenomeInfoDb,
-  GenomicRanges,
   knitr,
-  limma,
-  minfi,
-  roxygen2,
-  stats,
-  testthat,
-  tidyverse,
-  recount
+  roxygen2
 RoxygenNote: 5.0.1

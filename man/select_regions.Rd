@@ -30,7 +30,7 @@ information in columns  \code{phenodata}}
 to pull out from each chromosome (default: 100) \code{numRegions}}
 }
 \value{
-res The selected regions, the coverage matrix, and the region info 
+The selected regions, the coverage matrix, and the region info 
 to be used for prediction
 }
 \description{

@@ -10,7 +10,7 @@
 #' @param inputdata_list list out output objects from select_regions() 
 #' \code{inputdata_list}
 #'
-#' @return inputdata merged inputdata across multiple runs of select_regions()
+#' @return merged inputdata across multiple runs of select_regions()
 #'
 #' @keywords phenotype, merge, prediction, expression
 #'
@@ -18,15 +18,16 @@
 
 merge_input <- function(inputdata_list=NULL){	
 	require(tidyverse)
-	require(GenomicRanges)
-		map(inputdata_list, function(x){return(x$regioninfo)}) %>% bind_rows -> regioninfo 
-		map(inputdata_list, function(x){return(x$covmat)}) %>% bind_rows -> covmatrix
-		map(inputdata_list, function(x){return(x$regions)}) %>% GRangesList %>% unlist -> regions
+	require(GenomicRanges)	
+		map(inputdata_list, function(x){return(x$covmat)}) %>% ldply(., data.frame) -> covmatrix
+		map(inputdata_list, function(x){return(x$regioninfo)}) %>% ldply(., data.frame) -> regioninfo
+		# map(inputdata_list, function(x){return(x$regioninfo)}) %>% bind_rows -> regioninfo 
+		# map(inputdata_list, function(x){return(x$covmat)}) %>% bind_rows(.id=NULL) -> covmatrix
+		map(inputdata_list, function(x){return(x$regiondata)}) %>% GRangesList %>% unlist -> regiondata
 		
 		# this also works:
-		# do.call(c, map(inputdata_list, function(x){return(x$regions)}) ) -> regions2 
+		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata2 
 		
-		res <- list(regioninfo = regioninfo, covmat=covmatrix, regions = regions)
+		res <- list(regioninfo = regioninfo, covmat=covmatrix, regiondata = regiondata)
 		return(res)
 }
-

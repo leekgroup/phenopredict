@@ -16,7 +16,7 @@
 #' @param covariates Which covariates to include in model \code{covariates}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'
-#' @return res #####
+#' @return list of actual and predicted phenotype, and summarization of output
 #'
 #' @keywords phenotype, prediction, test
 #'

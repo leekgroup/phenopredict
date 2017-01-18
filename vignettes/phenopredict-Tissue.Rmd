@@ -1,0 +1,200 @@
+---
+title: "Tissue Prediction"
+author: "Shannon E. Ellis"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{recount quick start guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Track time spent on making the vignette
+startTime <- Sys.time()
+```
+# Load libraries
+
+```{r load-packages, message = FALSE, warning = FALSE}
+## load libraries
+library('phenopredict')
+
+## Set colors
+## import colors to use
+  bright= c(red=rgb(222,45,38, maxColorValue=255), #de2d26
+            pink=rgb( 255, 102, 153, maxColorValue=255), #ff6699
+            orange=rgb(232,121,12, maxColorValue=255),   #e8790c
+            yellow=rgb(255,222,13, maxColorValue=255), #ffde0d          
+            green=rgb(12,189,24, maxColorValue=255),  #0cbd18           
+            teal=rgb(59,196,199, maxColorValue=255), #3bc4c7
+            blue=rgb(58,158,234, maxColorValue=255), #3a9eea
+            purple=rgb(148,12,232, maxColorValue=255)) #940ce8  
+```
+
+# Load data and select regions
+```{r 'load-data-select-regions', message = FALSE, warning = FALSE}
+
+load("/dcl01/leek/data/sellis/barcoding/data/sample_individuals.Rdata")
+load("/dcl01/leek/data/sellis/barcoding/data/rda/gtexmetadata.rda")
+gtex_meta = gtexmetadata
+gtex_meta = cbind(gtex_meta,usegtex)
+rm(gtexmetadata,usegtex)
+gtex_meta[is.na(gtex_meta[,"SMTS"]),"SMTS"] <- c("Esophagus","Skin","Stomach","Skin","Esophagus")
+usegtex = gtex_meta$usegtex
+
+# prepare expression data
+if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_SMTS.rda")){
+	source("/dcs01/ajaffe/GTEX/Leek/coverageMatrix/simpleLoad/gtexLoad.R")
+	chrs = c("X","Y",1:22)
+	for(i in 1:length(chrs)){
+	  chrname=paste0("chr",chrs[i])
+	  cat(paste0(chrname,"..."))
+	  dat = gtexLoad(chrname)
+	  pheno = gtex_meta
+	  cm = dat$coverageMatrix
+	  regiondata = dat$regions
+	  cm = log2(cm + 1)
+	  wid = width(dat$regions)
+
+	  pheno = pheno[usegtex,]
+	  cm = cm[, usegtex]
+	  cm_all=cm[wid>20,]
+	  regiondata = regiondata[wid>20]
+	  cm_regiondata = regiondata
+	  #only include the half of samples used for building the predictor
+	  pheno = pheno[sample_individuals,]
+	  cm = cm_all[,sample_individuals]
+	  cm_new = cm_all[,-sample_individuals]
+	  assign(paste0("cm_new",'_',chrname),cm_new)
+
+	# number of regions in expression data 
+	nrow(cm)
+
+	# number of samples included in example
+	ncol(cm)
+	inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="SMTS",
+	    covariates=c("Sex","AGE","BMI","SMNABTCHT"),type="factor", numRegions=100)
+	assign(paste0("inputdata",'_',chrname),inputdata)
+  }
+}
+
+```
+
+# Merge input data
+
+```{r 'merge-inputdata', message = FALSE, warning = FALSE}
+if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_SMTS.rda")) {
+	test = as.list(file.list)
+	file.list.inputdata <- grep("inputdata_chr",ls(),val=T)
+	test<- merge_input(inputdata_list=list(do.call(get(file.list.inputdata))))
+
+	merge_input<- merge_input(inputdata_list=list(inputdata_chr1, inputdata_chr2, inputdata_chr3, inputdata_chr4, inputdata_chr5, inputdata_chr6, inputdata_chr7, inputdata_chr8, inputdata_chr9, inputdata_chr10, inputdata_chr11, inputdata_chr12, inputdata_chr13, inputdata_chr14, inputdata_chr15, inputdata_chr16, inputdata_chr17, inputdata_chr18, inputdata_chr19, inputdata_chr20, inputdata_chr21, inputdata_chr22, inputdata_chrX, inputdata_chrY) )
+} else {
+	load("/dcl01/leek/data/sellis/barcoding/data/merge_input_SMTS.rda")
+}
+# taking a look at output of select(regions)
+dim(merge_input$covmat)
+merge_input$regiondata
+head(merge_input$regioninfo)
+
+```
+
+# Build predictor
+
+```{r 'build-predictor', message = FALSE, warning = FALSE}
+if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_SMTS.rda")) {
+	predictor<-build_predictor(inputdata=merge_input ,phenodata=pheno, phenotype="SMTS",		 
+    	covariates=c("Sex","AGE","BMI","SMNABTCHT"),type="factor", numRegions=10)
+}else{
+	load('/dcl01/leek/data/sellis/barcoding/data/build_predictor_SMTS.rda')}
+
+#number of probes used for prediction
+length(predictor$trainingProbes)
+
+#this contains the coefficient estimates used for prediction. 
+# the number of rows corresponds to the number of sites used for prediction
+# while the columns corresponds to the number of categories of your phenotype.
+dim(predictor$coefEsts)
+
+```
+# Test predictor
+
+```{r 'test-predictor', message = FALSE, warning = FALSE}
+predictions_test <-test_predictor(inputdata=merge_input ,phenodata=pheno, phenotype="SMTS", 
+    covariates=c("Sex","AGE","BMI","SMNABTCHT"),type="factor",predictordata=predictor )
+
+# get summary of how prediction is doing
+predictions_test$summarized
+```
+
+# Extract data
+
+```{r 'extract-data', message = FALSE, warning = FALSE}
+# looking at the input data for extract_data
+cm_test = rbind(cm_new_chrX,cm_new_chrY)
+dim(cm_test)
+
+file.list.cm <- grep("cm_new_chr",ls(),val=T)
+file.list.inputdata <- grep("inputdata_chr",ls(),val=T)
+
+test_data<-extract_data(expression=list(cm_new_chr1, cm_new_chr2, cm_new_chr3, cm_new_chr4, cm_new_chr5, cm_new_chr6, cm_new_chr7, cm_new_chr8, cm_new_chr9, cm_new_chr10, cm_new_chr11, cm_new_chr12, cm_new_chr13, cm_new_chr14, cm_new_chr15, cm_new_chr16, cm_new_chr17, cm_new_chr18, cm_new_chr19, cm_new_chr20, cm_new_chr21, cm_new_chr22, cm_new_chrX, cm_new_chrY), 
+	inputdata=list(inputdata_chr1, inputdata_chr2, inputdata_chr3, inputdata_chr4, inputdata_chr5, inputdata_chr6, inputdata_chr7, inputdata_chr8, inputdata_chr9, inputdata_chr10, inputdata_chr11, inputdata_chr12, inputdata_chr13, inputdata_chr14, inputdata_chr15, inputdata_chr16, inputdata_chr17, inputdata_chr18, inputdata_chr19, inputdata_chr20, inputdata_chr21, inputdata_chr22, inputdata_chrX, inputdata_chrY), predictordata=predictor)
+```
+
+# Predict phenotype
+
+```{r 'predict-phenotype', message = FALSE, warning = FALSE}
+predictions<-predict_pheno(expression= test_data, phenodata=pheno, phenotype="SMTS",
+    predictordata = predictor)
+
+#since we know the truth here, let's check and see how we're doing:
+ 
+ #pull out actual Sex
+  pheno2 = gtex_meta
+  pheno2 = pheno2[usegtex,]
+  pheno2 = pheno2[-sample_individuals,]
+  actual = pheno2$SMTS
+
+  #define predicted
+  predicted = predictions
+
+  #summarize data
+	number_match <- sum(predicted==actual)
+	perc_correct = sum(predicted==actual)/length(actual)
+	number_sites = nrow(predictor$coefEsts)
+
+	summarized = c(number_sites,number_match, perc_correct)
+	names(summarized) <- c("sites_tested", "number_correct", "percent_correct")
+ 
+ #compare predictions to known sex
+ summarized
+
+```
+
+# Vignette information
+
+```{r reproducibility}
+## Time spent creating this report:
+diff(c(startTime, Sys.time()))
+
+## Date this report was generated
+message(Sys.time())
+
+## Reproducibility info
+options(width = 120)
+devtools::session_info()
+```
+
+Code for creating the vignette
+
+```{r createVignette, eval=FALSE}
+## Create the vignette
+library('rmarkdown')
+system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-Tissue.Rmd', 'BiocStyle::html_document'))
+
+## Extract the R code
+library('knitr')
+knit('/users/sellis/phenopredict/vignettes/phenopredict-Sex.Rmd', tangle = TRUE)
+```
+
+

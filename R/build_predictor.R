@@ -116,12 +116,12 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	form <- as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(pd[,phenotype])),
 	    collapse = "+"))) 
 	phenoDF <- as.data.frame(model.matrix(~pd[,phenotype] - 1))
-	colnames(phenoDF) <- sub("^pd[,phenotype]", "", colnames(phenoDF))
+	colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
 	if (ncol(phenoDF) == 2) {
 	    X <- as.matrix(phenoDF)
 	    coefEsts <- t(solve(t(X) %*% X) %*% t(X) %*% t(p))
 	}else{
-	    tmp <- minfi:::validationCellType(Y = p, pheno = phenoDF, modelFix = form)
+	    tmp <- minfi:::validationCellType(Y = as.matrix(p), pheno = phenoDF, modelFix = form)
 	    coefEsts <- tmp$coefEsts
 	}
 

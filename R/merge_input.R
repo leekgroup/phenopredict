@@ -18,15 +18,17 @@
 
 merge_input <- function(inputdata_list=NULL){	
 	require(tidyverse)
+	require(plyr)
 	require(GenomicRanges)	
 		map(inputdata_list, function(x){return(x$covmat)}) %>% ldply(., data.frame) -> covmatrix
 		map(inputdata_list, function(x){return(x$regioninfo)}) %>% ldply(., data.frame) -> regioninfo
+		
 		# map(inputdata_list, function(x){return(x$regioninfo)}) %>% bind_rows -> regioninfo 
 		# map(inputdata_list, function(x){return(x$covmat)}) %>% bind_rows(.id=NULL) -> covmatrix
-		map(inputdata_list, function(x){return(x$regiondata)}) %>% GRangesList %>% unlist -> regiondata
 		
-		# this also works:
-		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata2 
+		map(inputdata_list, function(x){return(x$regiondata)}) %>% GRangesList %>% unlist -> regiondata
+		# this also works (Thanks, Leo!):
+		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata
 		
 		res <- list(regioninfo = regioninfo, covmat=covmatrix, regiondata = regiondata)
 		return(res)

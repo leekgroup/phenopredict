@@ -36,16 +36,16 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 
 	## first, some checks
   type <- match.arg(type)
-  
+
 	if(is.null(regiondata)) {
     stop('Must include a GRanges object corresponding to the regions included in expession')
 	}
- 	if(is.null(expression)) {
-	  stop('Expression Data must be supplied.')
+  if(is.null(expression)) {
+    stop('Expression Data must be supplied.')
   }
-	if(phenotype %in% covariates) {
+  if(phenotype %in% covariates) {
     stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
-	}
+  }
   if(!is.numeric(numRegions)) {
     stop('Specify how many regions per category type you want to select with numRegions')
   }

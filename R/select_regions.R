@@ -28,7 +28,7 @@
 #' @export
 #' 
 
-select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor","binary", "numeric"), numRegions=100){
+select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor","binary","numeric"), numRegions=100){
 
 	require(limma)
 	require(GenomicRanges)

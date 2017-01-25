@@ -7,14 +7,13 @@ warnings_are_errors: false
 sudo: false
 cache: packages
 
-matrix:
-  include:
-    - os: linux
-      dist: precise
-    - os: linux
-      dist: trusty
-    - os: osx
-      osx_image: beta-xcode6.2
+addons:
+  apt:
+    sources:
+	      - ubuntu-toolchain-r-test
+	    packages:
+	      - gcc-4.9
+	      - g++-4.9
       
 r_packages:
 - covr

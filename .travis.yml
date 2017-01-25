@@ -5,6 +5,7 @@ language: r
 r: bioc-devel
 warnings_are_errors: false
 sudo: false
+dist: trusty
 cache: packages
 
 r_packages:

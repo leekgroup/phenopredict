@@ -17,6 +17,8 @@ startTime <- Sys.time()
 
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
+library('devtools')
+document("/users/sellis/phenopredict")
 library('phenopredict')
 ```
 # Load data

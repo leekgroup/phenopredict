@@ -35,7 +35,7 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	require(stats)
 
 	## first, some checks
-	type <- match.arg(type)
+	type <- match.arg(type,c("factor","binary", "numeric") )
 
 	if(is.null(regiondata)) {
 		stop('Must include a GRanges object corresponding to the regions included in expession')
@@ -43,7 +43,7 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	if(is.null(expression)) {
 		stop('Expression Data must be supplied.')
 	}
-	if(!(type %in% c('factor', 'binary', 'factor'))) {
+	if(!(type %in% c('factor', 'binary', 'numeric'))) {
 		stop('Phenotype you are predicting must be either "factor","binary", or "numeric"')
 	}
 	if(phenotype %in% covariates) {
@@ -61,7 +61,7 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	  }
 	  
 	  ## pull out covariates to be included in the model
-	  covars = pd[,covariates]
+	  covars = pd[,covariates, drop=F]
 	  ##get covariates in order
 	
 
@@ -70,8 +70,9 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	  	covars <- as.formula(paste("~ ", paste(covariates,collapse="+")))
 	  	mm = model.matrix(covars, data=pd)
 
+	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
-		tIndexes <- split(seq_len(pd), droplevels(pd[,phenotype]))
+		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=F]))
 		tstatList <- lapply(tIndexes, function(i) {
 		    x <- rep(0, ncol(yGene))
 		    x[i] <- 1 		
@@ -91,10 +92,22 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		# in case not all have the number of probes
 		cellSpecificList= lapply(tstatList, function(x) x[!is.na(x)])
 		trainingProbes <- unique(unlist(cellSpecificList))
+	}
+	if(type=="numeric"){
+		x=pd[,phenotype, drop=F]
+		design = cbind(x = x,mm)
+		fit = lmFit(yGene, design)
+		eb = eBayes(fit)
+		
+		cellSpecificList = as.numeric(rownames(topTable(eb,1,n=numRegions)))
+		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
+	}
+
+
 
 		# just extract the regions we're going to use to build the predictor
-		covmat = yGene[trainingProbes,]
-		regiondata = regiondata[trainingProbes]
+		covmat = yGene[trainingProbes, ,drop=F]
+		regiondata = regiondata[trainingProbes, ,drop=F]
 
 		# make sure we know which sites those are
 		index = c(as.numeric(trainingProbes))
@@ -105,6 +118,7 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 
 		res <- list(regiondata=regiondata, covmat=covmat, regioninfo=regioninfo )
 		return(res)
+
 
 
 }

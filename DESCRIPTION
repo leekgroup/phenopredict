@@ -17,7 +17,16 @@ VignetteBuilder: knitr
 Imports:
   GenomeInfoDb,
   GenomicRanges,
+<<<<<<< HEAD
   recount,
+=======
+  limma,
+  minfi,
+  stats,
+  testthat,
+  tidyverse,
+  recount
+>>>>>>> parent of 6a2eafb... travis attempt (removed tidyverse for now)
 Suggests:
   BiocStyle,
   caret, 

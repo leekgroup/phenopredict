@@ -17,7 +17,7 @@ variables in columns \code{phenodata}}
 
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
-\item{type}{The class of the phenotype of interest (numeric, factor) 
+\item{type}{The class of the phenotype of interest (numeric, binary, factor 
 \code{type}}
 
 \item{numRegions}{The number of regions per class of variable of interest 

@@ -17,7 +17,7 @@
 #' @export
 
 merge_input <- function(inputdata_list=NULL){	
-	require(dplyr)
+	require(tidyverse)
 	require(plyr)
 	require(GenomicRanges)	
 		map(inputdata_list, function(x){return(x$covmat)}) %>% ldply(., data.frame) -> covmatrix

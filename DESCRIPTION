@@ -17,27 +17,18 @@ VignetteBuilder: knitr
 Imports:
   GenomeInfoDb,
   GenomicRanges,
-<<<<<<< HEAD
-  recount,
-=======
   limma,
   minfi,
   stats,
   testthat,
-  tidyverse,
-  recount
->>>>>>> parent of 6a2eafb... travis attempt (removed tidyverse for now)
+  plyr,
+  dplyr,
+  recount,
+  caret,
+  randomForest
 Suggests:
   BiocStyle,
-  caret, 
-  dplyr,
   devtools,
-  limma,
-  minfi,
-  plyr,
-  stats,
-  testthat,
   knitr,
-  randomForest
   roxygen2
 RoxygenNote: 5.0.1

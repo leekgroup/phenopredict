@@ -18,6 +18,7 @@
 
 
 extract_data <- function(expression=NULL, inputdata=NULL, predictordata=NULL){	
+	require(plyr)
 	##########
 	### Get the unique regions
 	### from the GTEX selection proces

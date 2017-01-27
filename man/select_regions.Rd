@@ -6,8 +6,8 @@
 phenotype of interest}
 \usage{
 select_regions(expression = NULL, regiondata = NULL, phenodata = NULL,
-  phenotype = NULL, covariates = NULL, type = c("factor", "binary",
-  "numeric"), numRegions = 100)
+  phenotype = NULL, covariates = NULL, type = c("factor", "numeric"),
+  numRegions = 100)
 }
 \arguments{
 \item{expression}{expression data where regions are in rows and samples are 
@@ -23,7 +23,7 @@ information in columns  \code{phenodata}}
 
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
-\item{type}{The class of the phenotype of interest (numeric, binary, factor)
+\item{type}{The class of the phenotype of interest (numeric, factor)
 \code{type}}
 
 \item{numRegions}{The number of regions per class of variable of interest 

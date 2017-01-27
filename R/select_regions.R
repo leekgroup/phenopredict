@@ -14,7 +14,7 @@
 #' phenotype 
 #' information in columns  \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
-#' @param type The class of the phenotype of interest (numeric, binary, factor)
+#' @param type The class of the phenotype of interest (numeric, factor)
 #' \code{type}
 #' @param covariates Which covariates to include in model \code{covariates}
 #' @param numRegions The number of regions per class of variable of interest 
@@ -28,14 +28,14 @@
 #' @export
 #' 
 
-select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor","binary", "numeric"), numRegions=100){
+select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
 
 	require(limma)
 	require(GenomicRanges)
 	require(stats)
 
 	## first, some checks
-	type <- match.arg(type,c("factor","binary", "numeric") )
+	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(regiondata)) {
 		stop('Must include a GRanges object corresponding to the regions included in expession')
@@ -43,8 +43,8 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	if(is.null(expression)) {
 		stop('Expression Data must be supplied.')
 	}
-	if(!(type %in% c('factor', 'binary', 'numeric'))) {
-		stop('Phenotype you are predicting must be either "factor","binary", or "numeric"')
+	if(!(type %in% c('factor', 'numeric'))) {
+		stop('Phenotype you are predicting must be either "factor" or "numeric"')
 	}
 	if(phenotype %in% covariates) {
 		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')

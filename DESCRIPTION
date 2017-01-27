@@ -21,8 +21,11 @@ Imports:
   minfi,
   stats,
   testthat,
-  tidyverse,
-  recount
+  plyr,
+  dplyr,
+  recount,
+  caret,
+  randomForest
 Suggests:
   BiocStyle,
   devtools,

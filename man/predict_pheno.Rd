@@ -5,7 +5,7 @@
 \title{Makes predictions for selected phenotype}
 \usage{
 predict_pheno(expression = NULL, phenodata = NULL, phenotype = NULL,
-  predictordata = NULL)
+  type = c("factor", "numeric"), covariates = NULL, predictordata = NULL)
 }
 \arguments{
 \item{expression}{Expression data from test set \code{expression}}
@@ -14,6 +14,10 @@ predict_pheno(expression = NULL, phenodata = NULL, phenotype = NULL,
 variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
+
+\item{type}{The class of the phenotype of interest (numeric, factor)}
+
+\item{covariates}{Which covariates to include in model \code{covariates}}
 
 \item{predictordata}{object output from build_predictor \code{predictordata}}
 }

@@ -4,13 +4,14 @@
 \alias{extract_data}
 \title{Extracts data for predictions using regions from select_region()}
 \usage{
-extract_data(expression = NULL, inputdata = NULL, predictordata = NULL)
+extract_data(newexpression = NULL, newregiondata = NULL,
+  predictordata = NULL)
 }
 \arguments{
-\item{expression}{expression data set from which to extract coverage data 
+\item{newexpression}{expression data set from which to extract coverage data 
 \code{expression}}
 
-\item{inputdata}{object output from select_regions() \code{inputdata}}
+\item{newregiondata}{GRanges object containing region info for expression data \code{newregiondata}}
 
 \item{predictordata}{object output from build_predictor \code{predictordata}}
 }

@@ -17,7 +17,7 @@ variables in columns \code{phenodata}}
 
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
-\item{type}{The class of the phenotype of interest (numeric, binary, factor 
+\item{type}{The class of the phenotype of interest (numeric, factor) 
 \code{type}}
 
 \item{numRegions}{The number of regions per class of variable of interest 
@@ -25,7 +25,7 @@ to pull out from each chromosome (default: 10) \code{numRegions}}
 }
 \value{
 An n x m data.frame of coefficient estimates and region indices 
-for each of the regions included from select_regions()
+for each of the regions included from select_regions() along with regiondata and indices for trainingProbes
 }
 \description{
 This function takes the output from select_regions() and builds the 

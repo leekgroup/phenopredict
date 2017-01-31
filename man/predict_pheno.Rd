@@ -4,18 +4,22 @@
 \alias{predict_pheno}
 \title{Makes predictions for selected phenotype}
 \usage{
-predict_pheno(expression = NULL, phenodata = NULL, phenotype = NULL,
-  predictordata = NULL)
+predict_pheno(inputdata_test = NULL, phenodata = NULL, phenotype = NULL,
+  type = c("factor", "numeric"), covariates = NULL, predictordata = NULL)
 }
 \arguments{
-\item{expression}{Expression data from test set \code{expression}}
-
-\item{phenodata}{data set with phenotype information; samples in rows, 
-variables in columns \code{phenodata}}
+\item{inputdata_test}{Object containing expression data from test set and corresponding GRanges object \code{expression}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
 
+\item{type}{The class of the phenotype of interest (numeric, factor)}
+
+\item{covariates}{Which covariates to include in model \code{covariates}}
+
 \item{predictordata}{object output from build_predictor \code{predictordata}}
+
+\item{inputdata_test}{data set with phenotype information; samples in rows, 
+variables in columns \code{phenodata}}
 }
 \value{
 A vector of predicted phenoyptes

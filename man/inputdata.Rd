@@ -18,4 +18,3 @@ A list including a GRanges object (regiondadta), a expression matrix (cm),
 and a dataframe (regioninfo). This is the output of select_regions().
 }
 \keyword{datasets}
-

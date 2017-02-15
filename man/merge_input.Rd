@@ -24,4 +24,3 @@ objects.
 \keyword{merge,}
 \keyword{phenotype,}
 \keyword{prediction,}
-

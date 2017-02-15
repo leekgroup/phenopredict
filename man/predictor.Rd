@@ -18,4 +18,3 @@ and a vector of probes used in the model. This is the
 output of build_predictor().
 }
 \keyword{datasets}
-

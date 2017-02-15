@@ -16,4 +16,3 @@ A dataset containing expression data for 500 expression regions
 on chrX (generated from GTEx data)
 }
 \keyword{datasets}
-

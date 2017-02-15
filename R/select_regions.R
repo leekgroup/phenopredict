@@ -14,7 +14,7 @@
 #' phenotype 
 #' information in columns  \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
-#' @param type The class of the phenotype of interest (numeric, binary, factor)
+#' @param type The class of the phenotype of interest (numeric, factor)
 #' \code{type}
 #' @param covariates Which covariates to include in model \code{covariates}
 #' @param numRegions The number of regions per class of variable of interest 
@@ -28,14 +28,14 @@
 #' @export
 #' 
 
-select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor","binary", "numeric"), numRegions=100){
+select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
 
 	require(limma)
 	require(GenomicRanges)
 	require(stats)
 
 	## first, some checks
-	type <- match.arg(type,c("factor","binary", "numeric") )
+	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(regiondata)) {
 		stop('Must include a GRanges object corresponding to the regions included in expession')
@@ -43,8 +43,8 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	if(is.null(expression)) {
 		stop('Expression Data must be supplied.')
 	}
-	if(!(type %in% c('factor', 'binary', 'numeric'))) {
-		stop('Phenotype you are predicting must be either "factor","binary", or "numeric"')
+	if(!(type %in% c('factor', 'numeric'))) {
+		stop('Phenotype you are predicting must be either "factor" or "numeric"')
 	}
 	if(phenotype %in% covariates) {
 		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
@@ -56,19 +56,32 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	  #### GET INDICES FOR PHENOTYPE OF INTEREST
 	  yGene = expression
 	  pd = phenodata
-	  if(!all(covariates %in% names(pd))) {
-	  	stop('Covariate included that is not in the prediction set. Please double check "covariates" argument.')
-	  }
 	  
-	  ## pull out covariates to be included in the model
-	  covars = pd[,covariates, drop=F]
-	  ##get covariates in order
-	
+	  if(!is.null(covariates)){
+	  	if(!all(covariates %in% names(pd))) {
+	  		stop('Covariate included that is not in the prediction set. Please double check "covariates" argument.')
+	 	 }
+	  
+		  ## pull out covariates to be included in the model
+		  covar_data = pd[,covariates, drop=F]
+		  ##drop unused levels for any factor covariates 
+		  droplev <- function(x){
+		  	if(is.factor(x)){
+		  		out = as.factor(droplevels(x))
+		  	}else{
+		  		out=x
+		  	}
+		  	return(out)
+		  }
+			 covar_data<- as.data.frame(apply(covar_data,2,droplev))
+		
 
 		## instead of using rowttests, use LmFit 
 		## to compute differences & to include covariates
 	  	covars <- as.formula(paste("~ ", paste(covariates,collapse="+")))
-	  	mm = model.matrix(covars, data=pd)
+	  	mm = model.matrix(covars, data=covar_data)
+	  }
+
 
 	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
@@ -77,7 +90,11 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		    x <- rep(0, ncol(yGene))
 		    x[i] <- 1 		
 
-		    design = cbind(x = x,mm)
+		    if(!is.null(covariates)){
+		  	  design = cbind(x = x,mm)
+		  	}else{
+		  		design = cbind(x = x)
+		  	}
 		     
 		    fit = lmFit(yGene,design)			##### this is the SLOWWWW part
 		    eb = eBayes(fit)
@@ -95,7 +112,13 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	}
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]
-		design = cbind(x = x,mm)
+		  
+	    if(!is.null(covariates)){
+	  	  design = cbind(x = x,mm)
+	  	}else{
+	  		design = cbind(x = x)
+	  	}
+
 		fit = lmFit(yGene, design)
 		eb = eBayes(fit)
 		

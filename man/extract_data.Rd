@@ -27,4 +27,3 @@ to make predictions.
 \keyword{phenotype,}
 \keyword{prediction,}
 \keyword{set}
-

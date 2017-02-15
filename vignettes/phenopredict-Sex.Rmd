@@ -18,8 +18,8 @@ startTime <- Sys.time()
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
 library(devtools)
-library('phenopredict')
 document("/users/sellis/phenopredict")
+library('phenopredict')
 
 ## Set colors
 ## import colors to use
@@ -69,16 +69,16 @@ for(i in 1:length(chrs)){
   assign(paste0("cm_new",'_',chrname),cm_new)
   assign(paste0("cm_regiondata",'_',chrname),cm_regiondata)
 
-# number of regions in expression data 
-nrow(cm)
+  # number of regions in expression data 
+  nrow(cm)
 
-# number of samples included in example
-ncol(cm)
+  # number of samples included in example
+  ncol(cm)
 
-inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="Sex",
-    covariates=c("AGE","BMI","SMNABTCHT"),type="factor", numRegions=100)
+  inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="Sex",
+      covariates=c("AGE","BMI","SMNABTCHT"),type="factor", numRegions=100)
 
-assign(paste0("inputdata",'_',chrname),inputdata)
+  assign(paste0("inputdata",'_',chrname),inputdata)
 }
 ```
 
@@ -86,29 +86,56 @@ assign(paste0("inputdata",'_',chrname),inputdata)
 
 ```{r 'merge-inputdata', message = FALSE, warning = FALSE}
 merge_input<- merge_input(inputdata_list=list(inputdata_chrX, inputdata_chrY))
+
+# save(merge_input, file="data/merge_input_Sex.rda")
 # taking a look at output of select(regions)
 dim(merge_input$covmat)
 merge_input$regiondata
-head(merge_input$regioninfo)
 
 ```
 
 # Plot expression by sex at a few regions
 
 ```{r 'expression', fig.width=8, fig.height=8}
- 
+# dm = merge_input$covmat
+# par(mfrow=c(1,2))	
+# toplot = c(1,101)
+# library(extrafont)
+
+# pdf("plots/Sex_regions.pdf",family="Roboto Condensed",height=6,width=12)
+# par(mfrow=c(1,2),cex=1.2) 
+# for (i in toplot[1]){
+# 	female = as.numeric(dm[i,pheno$Sex=="female"])
+# 	male = as.numeric(dm[i,pheno$Sex=="male"])
+# 	region = seqnames(merge_input$regiondata[i])
+# 	plot(density(female),xlab="log2(Normalized Expression + 1)", xlim=c(0,max(female)),
+#        ylab="Density",cex.lab=1.2,cex.axis=1.2,,col=bright["purple"],main=region,lwd=2)
+#   	lines(density(male),col=bright["teal"],lwd=3)
+#   }
+# for(i in toplot[2]){
+#   female = as.numeric(dm[i,pheno$Sex=="female"])
+#   male = as.numeric(dm[i,pheno$Sex=="male"])
+#   region = seqnames(merge_input$regiondata[i])
+#   plot(density(male),xlab="log2(Normalized Expression + 1)",xlim=c(0,max(male)),
+#        ylab="Density",cex.lab=1.2,cex.axis=1.2,,col=bright["teal"],main=region,lwd=2)
+#     lines(density(female),col=bright["purple"],lwd=3)
+#   }
+#    legend("topleft",legend=c("males","females"),col=c(bright["teal"],bright["purple"]),bty="n",lwd=2,cex=1.2)
+# dev.off()
+
 dm = merge_input$covmat
-par(mfrow=c(2,2))	
+par(mfrow=c(2,2)) 
 toplot = c(1,2,101,102)
 for (i in toplot){
-	female = as.numeric(dm[i,pheno$Sex=="female"])
-	male = as.numeric(dm[i,pheno$Sex=="male"])
-	region = names(merge_input$regiondata[i])
-	plot(density(female),xlab="log2(Normalized Expression + 1)",
-       ylab="Density",cex.lab=1.2,cex.axis=1.2,,col=bright["pink"],main=region,lwd=2)
-  	lines(density(male),col=bright["blue"],lwd=3)
+  female = as.numeric(dm[i,pheno$Sex=="female"])
+  male = as.numeric(dm[i,pheno$Sex=="male"])
+  region = names(merge_input$regiondata[i])
+  plot(density(female),xlab="log2(Normalized Expression + 1)",
+       ylab="Density",cex.lab=1.2,cex.axis=1.2,,col=bright["purple"],main=region,lwd=2)
+    lines(density(male),col=bright["teal"],lwd=3)
   }
-   legend("topleft",legend=c("males","females"),col=c(bright["pink"],bright["blue"]),bty="n",lwd=2,cex=1.2)
+   legend("topleft",legend=c("males","females"),col=c(bright["purple"],bright["teal"]),bty="n",lwd=2,cex=1.2)
+
 ```
 
 # Build predictor
@@ -116,6 +143,7 @@ for (i in toplot){
 ```{r 'build-predictor', message = FALSE, warning = FALSE}
 predictor<-build_predictor(inputdata=merge_input ,phenodata=pheno, phenotype="Sex", 
     covariates=c("AGE","BMI","SMNABTCHT" ),type="factor", numRegions=100)
+# save(predictor,file="data/predictor_Sex.rda")
 
 #number of probes used for prediction
 length(predictor$trainingProbes)
@@ -185,6 +213,136 @@ predictions<-predict_pheno(inputdata_test= merge_test, phenodata=pheno, phenotyp
 
 ```
 
+# Extract SRA data
+
+```{r 'extract-data', message = FALSE, warning = FALSE}
+library(GenomicRanges)
+
+
+#### SRA data [generated in merge_bwtool_by_chunk.R]
+## which chunk regions are in [chunk_grp]
+load('/dcl01/leek/data/sellis/barcoding/data/chunk_grp.Rdata')
+## region information [regions]
+load('/dcl01/leek/data/sellis/barcoding/data/regions-cut0.5.Rdata')
+reg = regions
+rm(regions)
+## add chunk information to all 1,187,643 regions
+reg$chunkname <- chunk_grp
+
+## GTEx regions to subset
+regions_to_subset = merge_input$regiondata
+
+## get regions overlap [b/w all quantified regions and GTEx subset]
+ov <- findOverlaps(reg,regions_to_subset)
+## Integer vector to re-order regions to https://github.com/jtleek/sra-gtex/blob/master/select-gtex-ers.R#L80-L88
+index_regions <- subjectHits(ov)
+index_regions_query <- queryHits(ov)
+#reorder GRanges objects
+reg <- reg[index_regions_query,]
+regions_to_subset <- regions_to_subset[index_regions,]
+
+regions_split <- split(reg, reg$chunkname)
+
+
+## load the coverageMatrix of interest from the appropriate "chunk"
+
+# dir.create('data/coverageMatrix_subset', showWarnings = FALSE)
+
+xx <- mapply(function(regs, chunk_name) {
+    message(paste(Sys.time(), 'processing', chunk_name))
+    
+    ## Load coverage matrix for each chunk [coverageMatrix]
+    load(paste0('/dcl01/leek/data/gtex_work/runs/sra/DER_analysis/coverageMatrix/ers_gtex/coverageMatrix-cut0.5-', chunk_name, '.Rdata'))
+
+    ## Load regions included in the chunk [regions_subset]
+   load( paste0('/dcl01/leek/data/gtex_work/runs/sra/DER_analysis/coverageMatrix/ers_gtex/regions_', chunk_name, '-cut0.5.Rdata'))
+
+    ## Identify which regions to keep
+    regions_keep <- which(countOverlaps( regions_subset,regions_to_subset) > 0)
+    stopifnot(length(regions_keep) == length(regs))
+    
+    ## Save actual subset of regions used
+    regions_subset <- regions_subset[regions_keep]
+    save(regions_subset, file = paste0('data/minfi_rda/regions_', chunk_name, '-cut0.5.Rdata'))
+    
+    ## Compute chunk coverage matrix
+    coverageMatrix_subset <- coverageMatrix[regions_keep,]
+    save(coverageMatrix_subset, file = paste0('data/minfi_rda/coverageMatrix-cut0.5-', chunk_name,
+        '.Rdata'))
+    
+    ## Finish
+    return(invisible(NULL))
+}, regions_split, names(table(reg$chunkname)))
+
+## compile the subset of regions into a single object
+chunks <-names(table(reg$chunkname))
+coverageMatrix=c()
+regions = GRanges()
+
+for (i in 1:length(chunks)){
+      message(paste(Sys.time(), 'processing', chunks[i]))
+
+  ## load in each chunk and save to a data frame
+  load(paste0('data/minfi_rda/coverageMatrix-cut0.5-', chunks[i],
+        '.Rdata'))
+  coverageMatrix = rbind(coverageMatrix, coverageMatrix_subset)
+
+  ## load in and combine region data
+  load(paste0('data/minfi_rda/regions_', chunks[i], '-cut0.5.Rdata'))
+  regions = append(regions,regions_subset)
+} 
+
+sra_inputdata = list(covmat=coverageMatrix,regiondata=regions)
+
+# save(sra_inputdata,file='data/SRA_inputdata_Sex.Rdata')
+
+
+```
+
+# Predict phenotype in SRA
+
+```{r 'predict-phenotype', message = FALSE, warning = FALSE}
+#get inputdata in order
+ov <- findOverlaps(predictor$regiondata,sra_inputdata$regiondata)
+index_regions <- subjectHits(ov)
+#reorder GRanges objects
+sra_inputdata$regiondata <- sra_inputdata$regiondata[index_regions]
+sra_inputdata$covmat <- sra_inputdata$covmat[index_regions,]
+
+predictions<-predict_pheno(inputdata_test= sra_inputdata, phenodata=pheno, phenotype="Sex", covariates=NULL,type="factor", predictordata = predictor)
+
+
+#since we know the truth here, let's check and see how we're doing:
+ 
+ #pull out actual Sex
+  actual = sra_meta$Sex
+
+  #define predicted
+  predicted = predictions
+
+  ## only compare between those annotated in SRA 
+  sexes = c("F","female","Female","M","male","Male")
+  actual_subset = actual[actual %in% sexes]
+  actual_subset[actual_subset=="Female"] <- "female"
+  actual_subset[actual_subset=="F"] <- "female"
+  actual_subset[actual_subset=="Male"] <- "male"
+  actual_subset[actual_subset=="M"] <- "male"
+
+  predicted_subset = predicted[actual %in% sexes]
+
+  #summarize data
+  number_match <- sum(predicted_subset==actual_subset)
+  perc_correct = sum(predicted_subset==actual_subset)/length(actual_subset)
+  number_sites = nrow(predictor$coefEsts)
+
+  summarized = c(number_sites,number_match, perc_correct)
+  names(summarized) <- c("sites_tested", "number_correct", "percent_correct")
+ 
+ #compare predictions to known sex
+ summarized
+
+```
+
 # Vignette information
 
 ```{r reproducibility}
@@ -210,5 +368,8 @@ system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-Sex.Rmd', 
 library('knitr')
 knit('/users/sellis/phenopredict/vignettes/phenopredict-Sex.Rmd', tangle = TRUE)
 ```
+
+
+
 
 

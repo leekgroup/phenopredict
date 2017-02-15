@@ -15,4 +15,3 @@ pheno
 A dataset containing phenotype data for 4769 samples included in "cm"
 }
 \keyword{datasets}
-

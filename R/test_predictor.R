@@ -54,10 +54,15 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 	#extract regions
 	expressiondata = inputdata$covmat[predictor$trainingProbes,]
 	regiondata = inputdata$regiondata[predictor$trainingProbes]
+
+
+	ov = findOverlaps(inputdata$regiondata, predictor$regiondata)
+
+
 	## predictions
 	if(type=="factor"){
 		# define possible predictions
-		possibles = levels(droplevels(phenodata[,phenotype]))
+		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
 		# make predictions
 		minfi:::projectCellType(Y=expressiondata, coefCellType=predictordata$coefEsts) -> predictions
@@ -86,14 +91,14 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 	if(type=="factor"){
 		number_match <- sum(predicted==actual)
 		perc_correct = sum(predicted==actual)/length(actual)
-		summarized = c(number_sites,number_match, perc_correct)
-		names(summarized) <- c("sites_tested", "number_correct", "percent_correct")
+		summarized = cbind(number_sites,number_match, perc_correct)
+		colnames(summarized) <- c("sites_tested", "number_correct", "percent_correct")
 	}
 	if(type=="numeric"){
 		correlation = cor(predicted, actual)
 		mean_diff = mean(abs(predicted-actual))
-		summarized = c(number_sites, correlation, mean_diff)
-		names(summarized) <- c("sites_tested", "correlation","mean_diff")
+		summarized = cbind(number_sites, correlation, mean_diff)
+		colnames(summarized) <- c("sites_tested", "correlation","mean_diff")
 	}
 
 	res <- list(actual = actual, predicted=predicted, summarized=summarized)

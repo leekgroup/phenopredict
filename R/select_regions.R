@@ -33,6 +33,8 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	require(limma)
 	require(GenomicRanges)
 	require(stats)
+	require(gdata)
+	require(genefilter)
 
 	## first, some checks
 	type <- match.arg(type,c("factor", "numeric") )
@@ -63,18 +65,8 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	 	 }
 	  
 		  ## pull out covariates to be included in the model
-		  covar_data = pd[,covariates, drop=F]
-		  ##drop unused levels for any factor covariates 
-		  droplev <- function(x){
-		  	if(is.factor(x)){
-		  		out = as.factor(droplevels(x))
-		  	}else{
-		  		out=x
-		  	}
-		  	return(out)
-		  }
-			 covar_data<- as.data.frame(apply(covar_data,2,droplev))
-		
+		  covar_data = as.data.frame(pd[,covariates, drop=F])
+		  covar_data = gdata::drop.levels(covar_data)
 
 		## instead of using rowttests, use LmFit 
 		## to compute differences & to include covariates
@@ -86,29 +78,32 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
 		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=F]))
-		tstatList <- lapply(tIndexes, function(i) {
-		    x <- rep(0, ncol(yGene))
-		    x[i] <- 1 		
+		
+				tstatList <- lapply(tIndexes, function(i) {
+				    x <- rep(0, ncol(yGene))
+				    x[i] <- 1 
 
-		    if(!is.null(covariates)){
-		  	  design = cbind(x = x,mm)
-		  	}else{
-		  		design = cbind(x = x)
-		  	}
-		     
-		    fit = lmFit(yGene,design)			##### this is the SLOWWWW part
-		    eb = eBayes(fit)
-		    return(as.numeric(rownames(topTable(eb,1,n=numRegions))))
+				    if(!is.null(covariates)){
+				  	  design = as.data.frame(cbind(x,mm))
+				  	}else{
+				  		design = as.data.frame(cbind(x = x))
+				  	}  
+
+			    fit = lmFit(yGene,design)			##### this is the SLOWWWW part
+		    	eb = eBayes(fit)
+
+		    	return(as.numeric(rownames(topTable(eb,1,n=numRegions))))
+		    })
 		      ## Note that in lmFit,
 		      # g1mean <- rowMeans(normalized data in grp1)
 		      # g2mean <- rowMeans(normalized data in grp2)
 		      # fc <- g1mean - g2mean
-
-		})
-
-		# in case not all have the number of probes
-		cellSpecificList= lapply(tstatList, function(x) x[!is.na(x)])
-		trainingProbes <- unique(unlist(cellSpecificList))
+			
+			# in case not all have the number of probes
+	
+	cellSpecificList= lapply(tstatList, function(x) x[!is.na(x)])
+	trainingProbes <- unique(unlist(cellSpecificList))
+		# length(trainingProbes)
 	}
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]

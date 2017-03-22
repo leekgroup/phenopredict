@@ -51,7 +51,7 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 	if(type=="factor"){
 		require(minfi)
 		# define possible predictions
-		possibles = levels(droplevels(phenodata[,phenotype]))
+		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
 		# make predictions
 		minfi:::projectCellType(Y=expression, coefCellType=predictordata$coefEsts) -> predictions
@@ -65,9 +65,11 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		datar = as.data.frame(t(expression))
 		colnames(datar) = names(regiondata)
 		datar$phenouse = phenouse
-		covars = phenodata[,covariates, drop=F]
-		datar = cbind(datar, covars)
-
+		
+		if(!is.null(covariates)){
+			covars = phenodata[,covariates, drop=F]
+			datar = cbind(datar, covars)
+		}
 		# predict
 		plsClasses <- predict(predictordata$coefEsts, newdata = datar)
 		predicted = plsClasses

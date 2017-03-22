@@ -17,6 +17,8 @@ startTime <- Sys.time()
 
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
+library(devtools)
+document("/users/sellis/phenopredict")
 library('phenopredict')
 
 ## Set colors
@@ -43,7 +45,7 @@ gtex_meta[is.na(gtex_meta[,"SMTS"]),"SMTS"] <- c("Esophagus","Skin","Stomach","S
 usegtex = gtex_meta$usegtex
 
 # prepare expression data
-if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE.rda")){
+if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE_nocovars.rda")){
 	source("/dcs01/ajaffe/GTEX/Leek/coverageMatrix/simpleLoad/gtexLoad.R")
 	chrs = c("X","Y",1:22)
 	for(i in 1:length(chrs)){
@@ -75,10 +77,11 @@ if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE.rda")){
 	# number of samples included in example
 	ncol(cm)
 	inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="AGE",
-	    covariates=c("Sex","BMI","SMNABTCHT"),type="numeric", numRegions=40)
+	    covariates=NULL,type="numeric", numRegions=40)
 	assign(paste0("inputdata",'_',chrname),inputdata)
   }
-  save(cm_new_chr1, cm_new_chr2, cm_new_chr3, cm_new_chr4, cm_new_chr5, cm_new_chr6, cm_new_chr7, cm_new_chr8, cm_new_chr9, cm_new_chr10, cm_new_chr11, cm_new_chr12, cm_new_chr13, cm_new_chr14, cm_new_chr15, cm_new_chr16, cm_new_chr17, cm_new_chr18, cm_new_chr19, cm_new_chr20, cm_new_chr21, cm_new_chr22, cm_new_chrX, cm_new_chrY, file="data/cm_new.Rda")
+  save(cm_new_chr1, cm_new_chr2, cm_new_chr3, cm_new_chr4, cm_new_chr5, cm_new_chr6, cm_new_chr7, cm_new_chr8, cm_new_chr9, cm_new_chr10, cm_new_chr11, cm_new_chr12, cm_new_chr13, cm_new_chr14, cm_new_chr15, cm_new_chr16, cm_new_chr17, cm_new_chr18, cm_new_chr19, cm_new_chr20, cm_new_chr21, cm_new_chr22, cm_new_chrX, cm_new_chrY, file="data/cm_new_nocovars.Rda")
+  save(cm_regiondata_chr1, cm_regiondata_chr2, cm_regiondata_chr3, cm_regiondata_chr4, cm_regiondata_chr5, cm_regiondata_chr6, cm_regiondata_chr7, cm_regiondata_chr8, cm_regiondata_chr9, cm_regiondata_chr10, cm_regiondata_chr11, cm_regiondata_chr12, cm_regiondata_chr13, cm_regiondata_chr14, cm_regiondata_chr15, cm_regiondata_chr16, cm_regiondata_chr17, cm_regiondata_chr18, cm_regiondata_chr19, cm_regiondata_chr20, cm_regiondata_chr21, cm_regiondata_chr22, cm_regiondata_chrX, cm_regiondata_chrY, file="data/cm_regiondata_nocovars.Rda")
 }
 ```
 
@@ -87,8 +90,9 @@ if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE.rda")){
 ```{r 'merge-inputdata', message = FALSE, warning = FALSE}
 if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE.rda")) {
 	merge_input<- merge_input(inputdata_list=list(inputdata_chr1, inputdata_chr2, inputdata_chr3, inputdata_chr4, inputdata_chr5, inputdata_chr6, inputdata_chr7, inputdata_chr8, inputdata_chr9, inputdata_chr10, inputdata_chr11, inputdata_chr12, inputdata_chr13, inputdata_chr14, inputdata_chr15, inputdata_chr16, inputdata_chr17, inputdata_chr18, inputdata_chr19, inputdata_chr20, inputdata_chr21, inputdata_chr22, inputdata_chrX, inputdata_chrY) )
+	save(merge_input, file="/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE_nocovars.rda")
 } else {
-	load("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE.rda")
+	load("/dcl01/leek/data/sellis/barcoding/data/merge_input_AGE_nocovars.rda")
 }
 # taking a look at output of select(regions)
 dim(merge_input$covmat)
@@ -101,12 +105,12 @@ head(merge_input$regioninfo)
 # Build predictor
 
 ```{r 'build-predictor', message = FALSE, warning = FALSE}
-if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/predictor_AGE.rda")) {
+if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/predictor_AGE_nocovars.rda")) {
 	predictor<-build_predictor(inputdata=merge_input ,phenodata=pheno, phenotype="AGE",		 
-    	covariates=c("Sex","BMI","SMNABTCHT"),type="numeric", numRegions=40)
-	save(predictor, file="/dcl01/leek/data/sellis/barcoding/data/predictor_AGE.rda")
+    	covariates=NULL,type="numeric", numRegions=40)
+	save(predictor, file="/dcl01/leek/data/sellis/barcoding/data/predictor_AGE_nocovars.rda")
 }else{
-	load("/dcl01/leek/data/sellis/barcoding/data/predictor_AGE.rda")
+	load("/dcl01/leek/data/sellis/barcoding/data/predictor_AGE_nocovars.rda")
 }
 
 # number of probes used for prediction
@@ -123,7 +127,7 @@ predictor$regiondata
 
 ```{r 'test-predictor', message = FALSE, warning = FALSE}
 predictions_test <-test_predictor(inputdata=merge_input ,phenodata=pheno, phenotype="AGE", 
-    covariates=c("Sex","BMI","SMNABTCHT"),type="numeric",predictordata=predictor )
+    covariates=NULL,type="numeric",predictordata=predictor )
 
 
 # get summary of how prediction is doing
@@ -132,10 +136,10 @@ predictions_test$summarized
  # take a look
 predicted = predictions_test$predicted
 actual = predictions_test$actual
-
+cor(predicted,actual)
 # library(extrafont)
 # pdf("plots/Age_parRF.pdf",family="Roboto Condensed", width=18)
-# par(mfrow=c(1,2))
+ # par(mfrow=c(1,2))
  plot(predicted~actual, pch=19, main="Training Set")
  abline(lm(predicted~actual),col=bright["purple"],lwd=2)
  fit=fit = lm(predicted~actual)
@@ -150,8 +154,8 @@ actual = predictions_test$actual
 
 file.list.cm <- grep("cm_new_chr",ls(),val=T)
 file.list.inputdata <- grep("inputdata_chr",ls(),val=T)
-if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/test_data_AGE.rda")) {
-	load("data/cm_new.Rda")
+if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/test_data_AGE_nocovars.rda")) {
+	load("data/cm_new_nocovars.Rda")
 
 	for(i in 1:length(chrs)){
 		chrname=paste0("chr",chrs[i])
@@ -168,14 +172,14 @@ if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/test_data_AGE.rda")) {
 		merge_test<- merge_input(inputdata_list=list(cm_chr1, cm_chr2,cm_chr3, cm_chr4,cm_chr5, cm_chr6, cm_chr7, cm_chr8, cm_chr9, cm_chr10, cm_chr11, cm_chr12, cm_chr13, cm_chr14, cm_chr15, cm_chr16, cm_chr17, cm_chr18, cm_chr19, cm_chr20, cm_chr21, cm_chr22, cm_chrX, cm_chrY) )
 
 		dim(merge_test$covmat)
-		save(merge_test,file="/dcl01/leek/data/sellis/barcoding/data/test_data_AGE.rda")
+		save(merge_test,file="/dcl01/leek/data/sellis/barcoding/data/test_data_AGE_nocovars.rda")
 		# for(i in 1:length(chrs)){
 		# 	chrname=paste0("chr",chrs[i])
 		# 	a<-paste0("cm_",chrname)
 		# 	print(dim(get(a)$covmat))
 		# }	
 }else{
-	load("/dcl01/leek/data/sellis/barcoding/data/test_data_AGE.rda")
+	load("/dcl01/leek/data/sellis/barcoding/data/test_data_AGE_nocovars.rda")
 
 	#get data in the same order
 	ov <- findOverlaps(predictor$regiondata,merge_test$regiondata)
@@ -197,7 +201,7 @@ if(!file.exists("/dcl01/leek/data/sellis/barcoding/data/test_data_AGE.rda")) {
   pheno2 = pheno2[-sample_individuals,]
   actual = pheno2$AGE
 
-predictions<-predict_pheno(inputdata_test= merge_test, phenodata=pheno2,covariates=c("Sex","BMI","SMNABTCHT"), phenotype="AGE",type="numeric",predictordata = predictor)
+predictions<-predict_pheno(inputdata_test=merge_test, phenodata=pheno2,covariates=NULL, phenotype="AGE",type="numeric", predictordata = predictor)
 
 #since we know the truth here, let's check and see how we're doing:
  
@@ -246,7 +250,7 @@ system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-Age.Rmd', 
 
 ## Extract the R code
 library('knitr')
-knit('/users/sellis/phenopredict/vignettes/phenopredict-Sex.Rmd', tangle = TRUE)
+knit('/users/sellis/phenopredict/vignettes/phenopredict-Age.Rmd', tangle = TRUE)
 ```
 
 

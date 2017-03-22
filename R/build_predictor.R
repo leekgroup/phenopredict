@@ -32,6 +32,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	require(minfi)
 	require(caret)
 	require(randomForest)
+	require(gdata)
 
 	## first, some checks
 	 ## first, some checks
@@ -62,47 +63,66 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	yGene = inputdata$covmat
 	pd = phenodata
 
-	if(!all(covariates %in% names(pd))) {
-		stop('Covariate included that is not in the prediction set. Please double check "covariates" argument.')
-	  	# stopifnot(covariates %in% names(pd))
-	}
+	if(!is.null(covariates)){
+	  	if(!all(covariates %in% names(pd))) {
+	  		stop('Covariate included that is not in the prediction set. Please double check "covariates" argument.')
+	 	 }
+	  
+		  ## pull out covariates to be included in the model
+		  covar_data = pd[,covariates, drop=F]
+		  ##drop unused levels for any factor covariates 
+		  covar_data = gdata::drop.levels(covar_data)
+
+		## instead of using rowttests, use LmFit 
+		## to compute differences & to include covariates
+	  	covars <- as.formula(paste("~ ", paste(covariates,collapse="+")))
+	  	mm = model.matrix(covars, data=covar_data)
+	  }
 	
 		## instead of using rowttests, use LmFit 
 		## to compute differences & to include covariates
 	  	message("Preparing Model")
-	  	covars <- as.formula(paste("~ ", paste(covariates,collapse="+")))
-	  	mm = model.matrix(covars, data=pd)
-	  	
-	if(type=="factor"){
-		tIndexes <- split(1:nrow(pd), droplevels(pd[,phenotype]))
-		tstatList <- lapply(tIndexes, function(i) {
-		    x <- rep(0, ncol(yGene))
-		    x[i] <- 1
+	
+	if(type=="factor"){  	
+	  	## get list indeces for each group in the factor
+		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=F]))
+		
+				tstatList <- lapply(tIndexes, function(i) {
+				    x <- rep(0, ncol(yGene))
+				    x[i] <- 1 
 
-		    # design = model.matrix(~factor(x) + covars,data=pd)
-		    design = cbind(x = x,mm)
-		      fit = lmFit(yGene,design)
-		      eb = eBayes(fit)
-		      return(topTable(eb,1,n=numRegions))
-		 })
+				    if(!is.null(covariates)){
+				  	  design = as.data.frame(cbind(x,mm))
+				  	}else{
+				  		design = as.data.frame(cbind(x = x))
+				  	}  
 
-		cellSpecificList <- lapply(tstatList, function(x) {
-		    y <- x[x[,"P.Value"]< 1e-05,]
-		    values = abs(y[,"logFC"]) ## code changed to allow for tissue expression to be higher or lower than expression in other tissues
-		    y <- y[order(values,decreasing=TRUE),] # negatives are higher in cell type
-		    c(rownames(y)[1:numRegions])
-		})
+			    fit = lmFit(yGene,design)			##### this is the SLOWWWW part
+		    	eb = eBayes(fit)
+
+		    	return(as.numeric(rownames(topTable(eb,1,n=numRegions))))
+		    })
+		      ## Note that in lmFit,
+		      # g1mean <- rowMeans(normalized data in grp1)
+		      # g2mean <- rowMeans(normalized data in grp2)
+		      # fc <- g1mean - g2mean
+			
 		# in case not all have the number of probes
-		cellSpecificList= lapply(cellSpecificList, function(x) x[!is.na(x)])
-		probeList=cellSpecificList
-		trainingProbes <- as.numeric(unique(unlist(probeList)))
+		cellSpecificList= lapply(tstatList, function(x) x[!is.na(x)])
+		trainingProbes <- unique(unlist(cellSpecificList))
 		regiondata = inputdata$regiondata[trainingProbes]
 
 	}
 	
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]
-		design = cbind(x = x,mm)
+
+	    if(!is.null(covariates)){
+	  	  design = cbind(x = factor(x),mm)
+	  	}else{
+	  		design = cbind(x = factor(x))
+	  	}
+
 		fit = lmFit(yGene, design)
 		eb = eBayes(fit)
 		
@@ -124,11 +144,11 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	p <- p[trainingProbes, ]
 	pMeans <- colMeans(p)
 	if(type=="factor"){
-		pd[,phenotype] <- droplevels(pd[,phenotype])
+		pd[,phenotype] <- droplevels(as.factor(pd[,phenotype]))
 		pd[,phenotype] <- gsub(" ","",pd[,phenotype])
 		pd[,phenotype] <- factor(pd[,phenotype])
 		names(pMeans) <- pd[,phenotype]
-		form <- as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(pd[,phenotype])),
+		form <- as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(as.factor(pd[,phenotype]))),
 	    collapse = "+"))) 
 		phenoDF <- as.data.frame(model.matrix(~pd[,phenotype] - 1))
 		colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))

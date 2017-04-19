@@ -1,24 +1,24 @@
 Package: phenopredict
-Title: Uses Gene Expression Data to Predict Phenotype Information
+Title: Predicting phenotypes from RNA-seq expression data
 Version: 0.1.0
 Authors@R: person("Shannon", "Ellis", email = "sellis18@jhmi.edu.com", 
 	role = c("aut", "cre"))
-Date: Date: 2016-12-21
-Description: This package utilizes data within [recount](https://
-    jhubiostatistics.shinyapps.io/recount/) to predict biological phenotypes of
-    interest (i.e. sex, tissue type) as well as technical phenotypes of interest (ie
-    polyA+ vs ribominus, miRNA vs total RNA).
+Date: Date: 2017-04-19
+Description: This package provides functionality to build and test phenotype 
+  predictors from expression data.
 Depends:
     R (>= 3.3.1)
 License: GPL-2
 LazyData: no
 VignetteBuilder: knitr
 Imports:
+  gdata,
   GenomeInfoDb,
   GenomicRanges,
   limma,
   minfi,
   stats,
+  S4Vectors,
   testthat,
   plyr,
   purrr,

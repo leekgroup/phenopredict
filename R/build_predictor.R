@@ -26,13 +26,13 @@
 
 
 build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL, numRegions=10){
-	require(GenomicRanges)
-	require(limma)
-	require(stats)
-	require(minfi)
-	require(caret)
-	require(randomForest)
-	require(gdata)
+	requireNamespace("GenomicRanges", quietly=TRUE)
+	requireNamespace("limma", quietly=TRUE)
+	requireNamespace("stats", quietly=TRUE)
+	requireNamespace("minfi", quietly=TRUE)
+	requireNamespace("caret", quietly=TRUE)
+	requireNamespace("randomForest", quietly=TRUE)
+	requireNamespace("gdata", quietly=TRUE)
 
 	## first, some checks
 	 ## first, some checks
@@ -75,8 +75,8 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 		## instead of using rowttests, use LmFit 
 		## to compute differences & to include covariates
-	  	covars <- as.formula(paste("~ ", paste(covariates,collapse="+")))
-	  	mm = model.matrix(covars, data=covar_data)
+	  	covars <- stats::as.formula(paste("~ ", paste(covariates,collapse="+")))
+	  	mm = stats::model.matrix(covars, data=covar_data)
 	  }
 	
 		## instead of using rowttests, use LmFit 
@@ -97,10 +97,10 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 				  		design = as.data.frame(cbind(x = x))
 				  	}  
 
-			    fit = lmFit(yGene,design)			##### this is the SLOWWWW part
-		    	eb = eBayes(fit)
+			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part
+		    	eb = limma::eBayes(fit)
 
-		    	return(as.numeric(rownames(topTable(eb,1,n=numRegions))))
+		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
 		    })
 		      ## Note that in lmFit,
 		      # g1mean <- rowMeans(normalized data in grp1)
@@ -123,10 +123,10 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	  		design = cbind(x = factor(x))
 	  	}
 
-		fit = lmFit(yGene, design)
-		eb = eBayes(fit)
+		fit = limma::lmFit(yGene, design)
+		eb = limma::eBayes(fit)
 		
-		cellSpecificList = as.numeric(rownames(topTable(eb,1,n=numRegions)))
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,1,n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
 		regiondata = inputdata$regiondata[trainingProbes]
 	}
@@ -134,7 +134,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 	##################
 	## Step2 
-	# step 2: use the `minfi:::validationCellType` function to get the coefficients for prediction
+	# step 2: use the `minfi::validationCellType` function to get the coefficients for prediction
 	# you have to make the formula to pass, but we have some code in the `minfi:::pickCompProbes` function
 	# it looks something like this, where `probeList` is really `cellSpecificInd` from above
 	message("Calculating Coefficients")
@@ -148,9 +148,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		pd[,phenotype] <- gsub(" ","",pd[,phenotype])
 		pd[,phenotype] <- factor(pd[,phenotype])
 		names(pMeans) <- pd[,phenotype]
-		form <- as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(as.factor(pd[,phenotype]))),
+		form <- stats::as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(as.factor(pd[,phenotype]))),
 	    collapse = "+"))) 
-		phenoDF <- as.data.frame(model.matrix(~pd[,phenotype] - 1))
+		phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
 		colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
 		
 		if (ncol(phenoDF) == 2) {
@@ -175,7 +175,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		datar = cbind(datar, covars)
 		
 		# mdoel data
-		plsFit <- train(phenouse ~ .,
+		plsFit <- caret::train(phenouse ~ .,
                  data = datar,
                  method = "parRF",
                  ## Center and scale the predictors for the training

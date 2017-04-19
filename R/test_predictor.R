@@ -26,7 +26,9 @@
 	
 
 test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type="factor",predictordata=NULL){	
-	require(minfi)
+	requireNamespace("minfi", quietly=TRUE)
+	requireNamespace("GenomicRanges", quietly=TRUE)
+	requireNamespace("stats", quietly=TRUE)
 
 	type <- match.arg(type,c("factor","binary", "numeric") )
 
@@ -40,7 +42,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
  		stop('Must specify predictor data to use. This is the output from build_predictor()')
  	}
 
-
+ 	predictor = predictordata
 	
 	## to chose max value, but assign NA if max is 0
 	which.highest <- function(x){
@@ -56,7 +58,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 	regiondata = inputdata$regiondata[predictor$trainingProbes]
 
 
-	ov = findOverlaps(inputdata$regiondata, predictor$regiondata)
+	ov = GenomicRanges::findOverlaps(inputdata$regiondata, predictor$regiondata)
 
 
 	## predictions
@@ -80,7 +82,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 		datar = cbind(datar, covars)
 
 		# predict
-		plsClasses <- predict(predictordata$coefEsts, newdata = datar)
+		plsClasses <- stats::predict(predictordata$coefEsts, newdata = datar)
 		predicted = plsClasses
 
 	}
@@ -95,7 +97,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 		colnames(summarized) <- c("sites_tested", "number_correct", "percent_correct")
 	}
 	if(type=="numeric"){
-		correlation = cor(predicted, actual)
+		correlation = stats::cor(predicted, actual)
 		mean_diff = mean(abs(predicted-actual))
 		summarized = cbind(number_sites, correlation, mean_diff)
 		colnames(summarized) <- c("sites_tested", "correlation","mean_diff")

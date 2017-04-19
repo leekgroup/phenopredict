@@ -9,7 +9,7 @@
 #'
 #' @param expression expression data where regions are in rows and samples are 
 #' in columns \code{expression}
-#' @param regiondata A GRanges object in which  \code{regiondata}
+#' @param regiondata A GenomicRanges object in which  \code{regiondata}
 #' @param phenodata phenotype data with samples in rows and corresponding 
 #' phenotype 
 #' information in columns  \code{phenodata}
@@ -30,17 +30,17 @@
 
 select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
 
-	require(limma)
-	require(GenomicRanges)
-	require(stats)
-	require(gdata)
-	require(genefilter)
+	requireNamespace("limma", quietly=TRUE)
+	requireNamespace("GenomicRanges", quietly=TRUE)
+	requireNamespace("stats", quietly=TRUE)
+	requireNamespace("gdata", quietly=TRUE)
+	# requireNamespace("genefilter", quietly=TRUE)
 
 	## first, some checks
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(regiondata)) {
-		stop('Must include a GRanges object corresponding to the regions included in expession')
+		stop('Must include a GenomicRanges object corresponding to the regions included in expession')
 	}
 	if(is.null(expression)) {
 		stop('Expression Data must be supplied.')
@@ -70,8 +70,8 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 
 		## instead of using rowttests, use LmFit 
 		## to compute differences & to include covariates
-	  	covars <- as.formula(paste("~ ", paste(covariates,collapse="+")))
-	  	mm = model.matrix(covars, data=covar_data)
+	  	covars <- stats::as.formula(paste("~ ", paste(covariates,collapse="+")))
+	  	mm = stats::model.matrix(covars, data=covar_data)
 	  }
 
 
@@ -89,10 +89,10 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 				  		design = as.data.frame(cbind(x = x))
 				  	}  
 
-			    fit = lmFit(yGene,design)			##### this is the SLOWWWW part
-		    	eb = eBayes(fit)
+			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part
+		    	eb = limma::eBayes(fit)
 
-		    	return(as.numeric(rownames(topTable(eb,1,n=numRegions))))
+		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
 		    })
 		      ## Note that in lmFit,
 		      # g1mean <- rowMeans(normalized data in grp1)
@@ -114,10 +114,10 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	  		design = cbind(x = x)
 	  	}
 
-		fit = lmFit(yGene, design)
-		eb = eBayes(fit)
+		fit = limma::lmFit(yGene, design)
+		eb = limma::eBayes(fit)
 		
-		cellSpecificList = as.numeric(rownames(topTable(eb,1,n=numRegions)))
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,1,n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
 	}
 
@@ -130,7 +130,7 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		# make sure we know which sites those are
 		index = c(as.numeric(trainingProbes))
 		type=c(rep(c(phenotype),times=c(length(trainingProbes))))
-		chr = seqnames(regiondata)	
+		chr = GenomicRanges::seqnames(regiondata)	
 		regioninfo = data.frame(chr=chr,type=type, 
 		                  index=index)
 

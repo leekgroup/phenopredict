@@ -4,8 +4,8 @@
 #' interest using selected regions upon which predictor 
 #' has been built
 #'
-#' @param inputdata_test Object containing expression data from test set and corresponding GRanges object \code{expression}
-#' @param inputdata_test data set with phenotype information; samples in rows, 
+#' @param inputdata_test Object containing expression data from test set and corresponding GenomicRanges object \code{expression}
+#' @param phenodata data set with phenotype information; samples in rows, 
 #' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
 #' @param type The class of the phenotype of interest (numeric, factor) 
@@ -21,12 +21,13 @@
 
 
 predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, type=c("factor","numeric") ,covariates=NULL, predictordata = NULL){	
+	requireNamespace("stats", quietly=TRUE)
 
 	#check to makes sure same regions are included 
 	if(length(inputdata_test$regiondata) != length(predictordata$regiondata)) {
 		stop('The same regions used to build your predictor must be the regions used in your test set.')
 	}
-	if(length(findOverlaps(inputdata_test$regiondata,predictordata$regiondata))!=length(predictordata$regiondata)){
+	if(length(GenomicRanges::findOverlaps(inputdata_test$regiondata,predictordata$regiondata))!=length(predictordata$regiondata)){
 		stop('Some of the regions in your test expression set are not the same as those in expression set used to build your predictor')
 	}
 	if(!(identical(names(inputdata_test$regiondata),names(predictordata$regiondata)))){
@@ -49,7 +50,7 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(type=="factor"){
-		require(minfi)
+		requireNamespace("minfi", quietly=TRUE)
 		# define possible predictions
 		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
@@ -60,7 +61,7 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		predicted <- possNA[esttype]
 	}
 	if(type=="numeric"){
-		require(caret)
+		requireNamespace("caret", quietly=TRUE)
 		phenouse <- as.numeric(phenodata[,phenotype])
 		datar = as.data.frame(t(expression))
 		colnames(datar) = names(regiondata)
@@ -71,7 +72,7 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 			datar = cbind(datar, covars)
 		}
 		# predict
-		plsClasses <- predict(predictordata$coefEsts, newdata = datar)
+		plsClasses <- stats::predict(predictordata$coefEsts, newdata = datar)
 		predicted = plsClasses
 	}
 

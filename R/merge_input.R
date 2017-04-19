@@ -17,17 +17,17 @@
 #' @export
 
 merge_input <- function(inputdata_list=NULL){	
-	require(dplyr)
-	require(purrr)
-	require(plyr)
-	require(GenomicRanges)	
-		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% ldply(., data.frame) -> covmatrix
+	requireNamespace("dplyr", quietly=TRUE)
+	requireNamespace("purrr", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
+	requireNamespace("GenomicRanges", quietly=TRUE)	
+		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% plyr::ldply(., data.frame) -> covmatrix
 		# map(inputdata_list, function(x){return(x$regioninfo)}) %>% ldply(., data.frame) -> regioninfo
 		
 		# map(inputdata_list, function(x){return(x$regioninfo)}) %>% bind_rows -> regioninfo 
 		# map(inputdata_list, function(x){return(x$covmat)}) %>% bind_rows(.id=NULL) -> covmatrix
 		
-		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>% GRangesList %>% unlist -> regiondata
+		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>% GenomicRanges::GRangesList %>% unlist -> regiondata
 		# this also works (Thanks, Leo!):
 		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata
 		#regioninfo = regioninfo,

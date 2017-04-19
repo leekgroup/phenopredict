@@ -18,12 +18,13 @@
 
 
 extract_data <- function(newexpression=NULL, newregiondata=NULL, predictordata=NULL){	
-	require(plyr)
+	# requireNamespace('plyr', quietly=TRUE)
 	##########
 	### Get the unique regions
 	### from the GTEX selection proces
 	##########
-	require('GenomicRanges')
+	requireNamespace('GenomicRanges', quietly=TRUE)
+	requireNamespace('S4Vectors', quietly=TRUE)
 	# first, some checks
 		##ADD thes
 	if(is.null(newexpression)) {
@@ -42,9 +43,9 @@ extract_data <- function(newexpression=NULL, newregiondata=NULL, predictordata=N
 	  # 				return(out)
 	  # 			}
 	
-	sites <- findOverlaps(predictordata$regiondata, newregiondata)
-	covmat_test = newexpression[subjectHits(sites),]
-	regiondata_test = newregiondata[subjectHits(sites)]
+	sites <- GenomicRanges::findOverlaps(predictordata$regiondata, newregiondata)
+	covmat_test = newexpression[S4Vectors::subjectHits(sites),]
+	regiondata_test = newregiondata[S4Vectors::subjectHits(sites)]
 
 	#if covmat is only one region, make sure it's still correct format and samples are in columns with regions in rows
 	if(length(sites)==1){

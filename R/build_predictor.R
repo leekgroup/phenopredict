@@ -143,11 +143,12 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]
+		x=as.numeric(x[,1])
 
 	    if(!is.null(covariates)){
-	  	  design = cbind(x = factor(x),mm)
+	  	  design = cbind(x = x,mm)
 	  	}else{
-	  		design = cbind(x = factor(x))
+	  		design = cbind(x = x)
 	  	}
 
 		fit = limma::lmFit(yGene, design)

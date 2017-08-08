@@ -8,7 +8,10 @@ predict_pheno(inputdata_test = NULL, phenodata = NULL, phenotype = NULL,
   type = c("factor", "numeric"), covariates = NULL, predictordata = NULL)
 }
 \arguments{
-\item{inputdata_test}{Object containing expression data from test set and corresponding GRanges object \code{expression}}
+\item{inputdata_test}{Object containing expression data from test set and corresponding GenomicRanges object \code{expression}}
+
+\item{phenodata}{data set with phenotype information; samples in rows, 
+variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
 
@@ -17,9 +20,6 @@ predict_pheno(inputdata_test = NULL, phenodata = NULL, phenotype = NULL,
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
 \item{predictordata}{object output from build_predictor \code{predictordata}}
-
-\item{inputdata_test}{data set with phenotype information; samples in rows, 
-variables in columns \code{phenodata}}
 }
 \value{
 A vector of predicted phenoyptes
@@ -28,6 +28,50 @@ A vector of predicted phenoyptes
 This function outputs predictions for phenotype of 
 interest using selected regions upon which predictor 
 has been built
+}
+\examples{
+
+library('GenomicRanges')
+library('dplyr')
+
+## Make up some some region data
+regions <- GRanges(seqnames = 'chr2', IRanges(
+     start = c(28971710:28971712, 29555081:29555083, 29754982:29754984),
+     end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
+
+## make up some expression data for 9 rows and 30 people
+data(sysdata, package='phenopredict')   
+## includes R object 'cm'
+exp= cm[1:length(regions),1:30]
+
+## generate some phenotype information
+sex = as.data.frame(rep(c("male","female"),each=15))
+age = as.data.frame(sample(1:100,30))
+pheno = dplyr::bind_cols(sex,age)
+colnames(pheno) <- c("sex","age")
+
+## select regions to be used to build the predictor
+inputdata <- select_regions(expression=exp, regiondata=regions,
+	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+
+## build phenotype predictor
+predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, 
+	phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+
+## determine resubstitution error
+## carry out prediction in training data set
+predictions_test<-test_predictor(inputdata=inputdata ,phenodata=pheno, 
+	phenotype="sex", covariates=NULL,type="factor",predictordata=predictor)	
+
+## generate new expressiondata set for prediction
+exp_new= cm_new[1:length(regions),1:30]
+## extract test data
+test_data<-extract_data(newexpression=exp_new, newregiondata=predictor$regiondata, 
+	predictordata=predictor)
+
+## predict phenotype in test data
+predictions <- predict_pheno(inputdata_test=test_data, phenodata=pheno, 
+phenotype="sex", type="factor" ,covariates=NULL, predictordata = predictor)
 }
 \keyword{data}
 \keyword{phenotype,}

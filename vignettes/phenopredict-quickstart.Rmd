@@ -42,7 +42,7 @@ nrow(cm)
 ncol(cm)
 
 inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="Sex",
-    covariates=c("AGE","BMI"),type="factor", numRegions=100)
+    covariates=NULL,type="factor", numRegions=100)
 
 # taking a look at output of select(regions)
 dim(inputdata$covmat)
@@ -57,8 +57,7 @@ head(inputdata$regioninfo)
 After selecting the regions for your phenotype of choice, you'll have to calculate the coefficient estimates for these regions. This will output the coefficient regions for your selected regions (rows) for each of the categories of your predictor (columns)
 
 ```{r 'build-predictor', message = FALSE, warning = FALSE}
-predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="Sex", 
-    covariates=c("AGE","BMI"),type="factor", numRegions=10)
+predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="Sex", covariates=NULL,type="factor", numRegions=10)
 
 #number of probes used for prediction
 length(predictor$trainingProbes)
@@ -75,7 +74,7 @@ If you want to test the accuracy of your build predictor on data in which the ph
 
 ```{r 'test-predictor', message = FALSE, warning = FALSE}
 predictions_test <-test_predictor(inputdata=inputdata ,phenodata=pheno, phenotype="Sex", 
-    covariates=c("AGE","BMI"),type="factor",predictordata=predictor )
+    covariates=NULL,type="factor",predictordata=predictor)
 
 # get summary of how prediction is doing
 predictions_test$summarized
@@ -89,7 +88,8 @@ To calculate the predictions for your chosen phenotype in a new data set, you wi
 # looking at the input data for extract_data
 dim(cm_new)
 
-test_data<-extract_data(expression=cm_new, inputdata=inputdata, predictordata=predictor)
+test_data<-extract_data(newexpression=cm_new, newregiondata=regiondata, predictordata=predictor)
+
 ```
 
 # Predict phenotype
@@ -97,8 +97,7 @@ test_data<-extract_data(expression=cm_new, inputdata=inputdata, predictordata=pr
 Finally, with coefficient estimates calculated and the appropriate regions selected from the test data set, you can now make your predictions!
 
 ```{r 'predict-phenotype', message = FALSE, warning = FALSE}
-predictions<-predict_pheno(expression= test_data, phenodata=pheno, phenotype="Sex",
-    predictordata = predictor)
+predictions<-predict_pheno(inputdata_test= test_data, phenodata=pheno, phenotype="Sex", covariates=NULL,type="factor", predictordata = predictor)
 
 #looking at the output
 table(predictions)
@@ -123,7 +122,7 @@ Code for creating the vignette
 ```{r createVignette, eval=FALSE}
 ## Create the vignette
 library('rmarkdown')
-system.time(render('phenopredict-quickstart.Rmd', 'BiocStyle::html_document'))
+system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-quickstart.Rmd', 'BiocStyle::html_document'))
 
 ## Extract the R code
 library('knitr')

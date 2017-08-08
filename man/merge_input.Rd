@@ -20,6 +20,39 @@ and merges the output before building and running the predictor. Objects
 output are the merged output from select_regions but contain the same 
 objects.
 }
+\examples{
+
+library('GenomicRanges')
+library('dplyr')
+## make up some expression data for 9 rows and 30 people
+data(sysdata, package='phenopredict')
+## includes R object 'cm'   
+
+## Make up some some region data
+regions <- GRanges(seqnames = 'chr2', IRanges(
+      start = c(28971710:28971712, 29555081:29555083, 29754982:29754984),
+      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
+
+## make up some expression data for 9 rows and 30 people
+exp= cm[1:length(regions),1:30]
+
+## Generate first object to be merged
+inputdata1 <- list()
+inputdata1$covmat = exp
+inputdata1$regiondata = regions
+
+## Generate scond object to be merged
+regions2 = GRanges(seqnames = 'chr9', IRanges(
+      start = c(28971710:28971712, 29555081:29555083, 29754982:29754984),
+      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
+exp2 = cm[1:length(regions2),1:30]
+inputdata2 <- list()
+inputdata2$covmat = exp2
+inputdata2$regiondata = regions2
+
+## merge objects
+inputdata_merged<-merge_input(inputdata_list=list(inputdata1, inputdata2))
+}
 \keyword{expression}
 \keyword{merge,}
 \keyword{phenotype,}

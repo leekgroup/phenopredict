@@ -18,7 +18,7 @@ startTime <- Sys.time()
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
 library('devtools')
-document("/users/sellis/phenopredict")
+install_github("leekgroup/phenopredict")
 library('phenopredict')
 ```
 # Load data
@@ -126,7 +126,7 @@ system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-quickstart
 
 ## Extract the R code
 library('knitr')
-knit('phenotype-quickstart.Rmd', tangle = TRUE)
+knit('/users/sellis/phenopredict/vignettes/phenotype-quickstart.Rmd', tangle = TRUE)
 ```
 
 

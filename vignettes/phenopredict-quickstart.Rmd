@@ -126,7 +126,7 @@ system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-quickstart
 
 ## Extract the R code
 library('knitr')
-knit('/users/sellis/phenopredict/vignettes/phenotype-quickstart.Rmd', tangle = TRUE)
+knit('/users/sellis/phenopredict/vignettes/phenopredict-quickstart.Rmd', tangle = TRUE)
 ```
 
 

@@ -181,10 +181,10 @@ table(predictions)</code></pre>
 <h1><span class="header-section-number">8</span> Vignette information</h1>
 <pre class="r"><code>## Time spent creating this report:
 diff(c(startTime, Sys.time()))</code></pre>
-<pre><code>## Time difference of 0.7546065 secs</code></pre>
+<pre><code>## Time difference of 7.525761 secs</code></pre>
 <pre class="r"><code>## Date this report was generated
 message(Sys.time())</code></pre>
-<pre><code>## 2017-08-24 15:16:18</code></pre>
+<pre><code>## 2017-08-24 15:18:35</code></pre>
 <pre class="r"><code>## Reproducibility info
 options(width = 120)
 devtools::session_info()</code></pre>
@@ -290,7 +290,7 @@ devtools::session_info()</code></pre>
 ##  openssl                0.9.6    2016-12-31 CRAN (R 3.3.1)                         
 ##  parallel             * 3.3.3    2017-05-18 local                                  
 ##  pbkrtest               0.4-7    2017-03-15 CRAN (R 3.3.1)                         
-##  phenopredict         * 0.99.0   2017-08-24 Github (leekgroup/phenopredict@922a9c5)
+##  phenopredict         * 0.99.0   2017-08-24 Github (leekgroup/phenopredict@049744c)
 ##  pkgconfig              2.0.1    2017-03-21 CRAN (R 3.3.3)                         
 ##  pkgmaker               0.22     2014-05-14 CRAN (R 3.3.0)                         
 ##  plyr                   1.8.4    2016-06-08 cran (@1.8.4)                          
@@ -299,7 +299,7 @@ devtools::session_info()</code></pre>
 ##  purrr                * 0.2.3    2017-08-02 cran (@0.2.3)                          
 ##  quadprog               1.5-5    2013-04-17 CRAN (R 3.3.0)                         
 ##  quantreg               5.33     2017-04-18 CRAN (R 3.3.1)                         
-##  [ reached getOption(&quot;max.print&quot;) -- omitted 41 rows ]</code></pre>
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 42 rows ]</code></pre>
 <p>Code for creating the vignette</p>
 <pre class="r"><code>## Create the vignette
 library('rmarkdown')
@@ -307,7 +307,7 @@ system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-quickstart
 
 ## Extract the R code
 library('knitr')
-knit('/users/sellis/phenopredict/vignettes/phenotype-quickstart.Rmd', tangle = TRUE)</code></pre>
+knit('/users/sellis/phenopredict/vignettes/phenopredict-quickstart.Rmd', tangle = TRUE)</code></pre>
 </div>
 
 

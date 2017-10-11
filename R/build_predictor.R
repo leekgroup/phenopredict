@@ -52,7 +52,7 @@
 #' predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, 
 #' 	phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
-build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL, numRegions=10){
+build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL, numRegions=NULL){
 	requireNamespace("GenomicRanges", quietly=TRUE)
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("stats", quietly=TRUE)
@@ -77,9 +77,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	if(phenotype %in% covariates) {
 		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
 	}
-	if(is.numeric(numRegions)==FALSE) {
-		stop('Specify how many regions per category type you want to select with numRegions')
-	}
+	# if(is.numeric(numRegions)==FALSE) {
+	# 	stop('Specify how many regions per category type you want to select with numRegions')
+	# }
 	if(ncol(inputdata$covmat) != nrow(phenodata)) {
 		stop('The number of samples in your inputdata must be the same as in your phenotype file')
 	}
@@ -126,6 +126,15 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part
 		    	eb = limma::eBayes(fit)
+
+		    	if(is.null(numRegions)){
+		    		# numreg<-nrow(yGene)
+		    		## select regions where p<0.05/#num of regions tested
+	  				## AND those with largest fold change difference (10% largest difference in expression)
+		    		numreg<-table(limma::topTable(eb,1,nrow(yGene))$P.Value< (0.05/nrow(yGene)) & limma::topTable(eb,1,nrow(yGene))$logFC>=quantile(limma::topTable(eb,1,nrow(yGene))$logFC,0.99))["TRUE"] %>% as.numeric
+		    		numreg
+		    		numRegions = numreg
+		    	}
 
 		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
 		    })

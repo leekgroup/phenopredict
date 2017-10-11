@@ -7,7 +7,7 @@ phenotype of interest}
 \usage{
 select_regions(expression = NULL, regiondata = NULL, phenodata = NULL,
   phenotype = NULL, covariates = NULL, type = c("factor", "numeric"),
-  numRegions = 100)
+  numRegions = NULL)
 }
 \arguments{
 \item{expression}{expression data where regions are in rows and samples are 

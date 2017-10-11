@@ -5,7 +5,7 @@
 \title{Uses output from select_regions() to build the predictor}
 \usage{
 build_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
-  covariates = NULL, type = NULL, numRegions = 10)
+  covariates = NULL, type = NULL, numRegions = NULL)
 }
 \arguments{
 \item{inputdata}{output from select_regions() \code{inputdata}}

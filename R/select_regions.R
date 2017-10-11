@@ -52,7 +52,7 @@
 #' inputdata <- select_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
-select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
+select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=NULL){
 
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("GenomicRanges", quietly=TRUE)
@@ -75,9 +75,9 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	if(phenotype %in% covariates) {
 		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
 	}
-	if(is.numeric(numRegions)==FALSE) {
-		stop('Specify how many regions per category type you want to select with numRegions')
-	}
+	 # if(is.numeric(numRegions)==FALSE) {
+	# 	stop('Specify how many regions per category type you want to select with numRegions')
+	 # }
 
 	  #### GET INDICES FOR PHENOTYPE OF INTEREST
 	  yGene = expression
@@ -99,6 +99,7 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	  }
 
 
+
 	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
 		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=F]))
@@ -115,6 +116,17 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 
 			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part
 		    	eb = limma::eBayes(fit)
+
+		    	## if no number of regions defined
+	  			## select regions where p<0.05/#num of regions tested
+	  			## AND those with largest fold change difference (1% largest difference in expression)
+		    	if(is.null(numRegions)){
+		    		numreg<-table(limma::topTable(eb,1,nrow(yGene))$P.Value< (0.05/nrow(yGene)) & limma::topTable(eb,1,nrow(yGene))$logFC>=quantile(limma::topTable(eb,1,nrow(yGene))$logFC,0.99))["TRUE"] %>% as.numeric
+		    		if(!is.na(numreg)){
+		    			numRegions = numreg
+		    		}
+		    		else(numRegions=0)
+		    	}
 
 		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
 		    })

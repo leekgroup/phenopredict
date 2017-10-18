@@ -18,7 +18,8 @@ startTime <- Sys.time()
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
 library('devtools')
-install_github("leekgroup/phenopredict")
+# install_github("leekgroup/phenopredict")
+document("/users/sellis/phenopredict")
 library('phenopredict')
 ```
 # Load data
@@ -28,23 +29,23 @@ data(sysdata, package='phenopredict')
 #loads cm, cm_new, regiondata, pheno to run example
 ```
 
-# Select regions
+# Filter regions
 
-The first step in building the predictor is selecting the regions that should be used for prediction. This step will require an expression data set (`expression`) in which your samples are in columns and your expression data are in rows. A corresponding GRanges object (`regiondata`) is required. The rows of this object shoudl correspond to those in your expression data set. Finally, you will have to provide a phenotype file (`phenodata`). The rows of this phenotype file will contain the samples included in your expression data set and the columns can include any phenotype information. `phenotype` specifies the phenotype upon which you want to build the predictor. `covariates` specifies those covariates you would like to include in the predictor. 
+The first step in building the predictor is filtering the regions that should be used for prediction. This step will require an expression data set (`expression`) in which your samples are in columns and your expression data are in rows. A corresponding GRanges object (`regiondata`) is required. The rows of this object should correspond to those in your expression data set. Finally, you will have to provide a phenotype file (`phenodata`). The rows of this phenotype file will contain the samples included in your expression data set and the columns can include any phenotype information. `phenotype` specifies the phenotype upon which you want to build the predictor. `covariates` specifies those covariates you would like to include in the predictor. 
 
 Note: the speed of this step depends on both the number of regions in your `expression` set AND (even moreso on) the number of levels in your `phenotype` being predicted.
 
-```{r 'select-regions', message = FALSE, warning = FALSE}
+```{r 'filter-regions', message = FALSE, warning = FALSE}
 # number of regions in expression data 
 nrow(cm)
 
 # number of samples included in example
 ncol(cm)
 
-inputdata<-select_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="Sex",
+inputdata<-filter_regions(expression=cm, regiondata=regiondata ,phenodata=pheno, phenotype="Sex",
     covariates=NULL,type="factor", numRegions=100)
 
-# taking a look at output of select(regions)
+# taking a look at output of filter_regions()
 dim(inputdata$covmat)
 
 inputdata$regiondata
@@ -82,7 +83,7 @@ predictions_test$summarized
 
 # Extract data
 
-To calculate the predictions for your chosen phenotype in a new data set, you will have to first extract the coverage matrix for the regions from select_regions() for your new data set. extract_data() supplies this:
+To calculate the predictions for your chosen phenotype in a new data set, you will have to first extract the coverage matrix for the regions from filter_regions() for your new data set. extract_data() supplies this:
 
 ```{r 'extract-data', message = FALSE, warning = FALSE}
 # looking at the input data for extract_data

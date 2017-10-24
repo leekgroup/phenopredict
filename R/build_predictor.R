@@ -1,12 +1,12 @@
-#' Uses output from select_regions() to build the predictor   
+#' Uses output from filter_regions() to build the predictor   
 #' 
-#' This function takes the output from select_regions() and builds the 
+#' This function takes the output from filter_regions() and builds the 
 #' phenotype predictor to be used for phenotype prediction in a new 
 #' data set. This function outputs the fits (coefficient estimates, `coefEsts`)
 #' from the model for the selectied regions as well as the rows selected 
 #' (`trainingProbes`) from the input data.  
 #'
-#' @param inputdata output from select_regions() \code{inputdata}
+#' @param inputdata output from filter_regions() \code{inputdata}
 #' @param phenodata data set with phenotype information; samples in rows, 
 #' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
@@ -17,7 +17,7 @@
 #' to pull out from each chromosome (default: 10) \code{numRegions}
 #'
 #' @return An n x m data.frame of coefficient estimates and region indices 
-#' for each of the regions included from select_regions() along with regiondata and indices for trainingProbes
+#' for each of the regions included from filter_regions() along with regiondata and indices for trainingProbes
 #'
 #' @keywords phenotype, prediction, coefficient estimates
 #'
@@ -44,8 +44,8 @@
 #' pheno = dplyr::bind_cols(sex,age)
 #' colnames(pheno) <- c("sex","age")
 #'
-#' ## select regions to be used to build the predictor
-#' inputdata <- select_regions(expression=exp, regiondata=regions,
+#' ## filter regions to be used to build the predictor
+#' inputdata <- filter_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 #' 
 #' ## build phenotype predictor
@@ -66,7 +66,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(inputdata)) {
-		stop('Must specify inputdata to use. This is the output from select_regions()')
+		stop('Must specify inputdata to use. This is the output from filter_regions()')
 	}
 	if(is.null(phenodata)) {
 		stop('Must include phenotype file.')
@@ -77,9 +77,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	if(phenotype %in% covariates) {
 		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
 	}
-	# if(is.numeric(numRegions)==FALSE) {
-	# 	stop('Specify how many regions per category type you want to select with numRegions')
-	# }
+	if(is.numeric(numRegions)==FALSE) {
+	 	stop('Specify how many regions per category type you want to select with numRegions')
+	 }
 	if(ncol(inputdata$covmat) != nrow(phenodata)) {
 		stop('The number of samples in your inputdata must be the same as in your phenotype file')
 	}
@@ -127,15 +127,6 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part
 		    	eb = limma::eBayes(fit)
 
-		    	if(is.null(numRegions)){
-		    		# numreg<-nrow(yGene)
-		    		## select regions where p<0.05/#num of regions tested
-	  				## AND those with largest fold change difference (10% largest difference in expression)
-		    		numreg<-table(limma::topTable(eb,1,nrow(yGene))$P.Value< (0.05/nrow(yGene)) & limma::topTable(eb,1,nrow(yGene))$logFC>=quantile(limma::topTable(eb,1,nrow(yGene))$logFC,0.99))["TRUE"] %>% as.numeric
-		    		numreg
-		    		numRegions = numreg
-		    	}
-
 		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
 		    })
 		      ## Note that in lmFit,
@@ -152,20 +143,18 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]
-		x=as.numeric(x[,1])
-
+		  
 	    if(!is.null(covariates)){
-	  	  design = cbind(x = x,mm)
+	  		design = cbind(model.matrix(~ns(get(phenotype),df=5),data=pd),mm)
 	  	}else{
-	  		design = cbind(x = x)
+	  		design = model.matrix(~ns(get(phenotype),df=5), data=pd)
 	  	}
 
-		fit = limma::lmFit(yGene, design)
+		fit = limma::lmFit(yGene,design)
 		eb = limma::eBayes(fit)
-		
-		cellSpecificList = as.numeric(rownames(limma::topTable(eb,1,n=numRegions)))
+
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,2:6,n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
-		regiondata = inputdata$regiondata[trainingProbes]
 	}
 
 
@@ -179,12 +168,12 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	
 	## okay, now go ahead...
 	p <- p[trainingProbes, ]
-	pMeans <- colMeans(p)
+	# pMeans <- colMeans(p)
 	if(type=="factor"){
 		pd[,phenotype] <- droplevels(as.factor(pd[,phenotype]))
 		pd[,phenotype] <- gsub(" ","",pd[,phenotype])
 		pd[,phenotype] <- factor(pd[,phenotype])
-		names(pMeans) <- pd[,phenotype]
+		# names(pMeans) <- pd[,phenotype]
 		form <- stats::as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(as.factor(pd[,phenotype]))),
 	    collapse = "+"))) 
 		phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
@@ -202,23 +191,15 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 	}
 	if(type=="numeric"){
-
-		# prepare data
-		phenouse <- as.numeric(pd[,phenotype])
-		datar = as.data.frame(t(p))
-		colnames(datar) = names(regiondata)
-		datar$phenouse = phenouse
-		covars = pd[,covariates, drop=F]
-		datar = cbind(datar, covars)
+		phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
+		colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
 		
-		# mdoel data
-		plsFit <- caret::train(phenouse ~ .,
-                 data = datar,
-                 method = "parRF",
-                 ## Center and scale the predictors for the training
-                ## set and all future samples.
-                preProc = c("center", "scale"))
-		res = list(coefEsts = plsFit, trainingProbes=trainingProbes, regiondata=regiondata)
+		X <- as.matrix(phenoDF)
+		coefEsts <- t(solve(t(X) %*% X) %*% t(X) %*% t(p))
+
+		#get coefficient estimates for regions included in topTable		
+		res <- list(coefEsts = coefEsts, trainingProbes=trainingProbes, regiondata=regiondata)
+
 	}
 
 	return(res)

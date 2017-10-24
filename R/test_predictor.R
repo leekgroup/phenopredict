@@ -7,7 +7,7 @@
 #' phenotypes are also input for comparison and 
 #' asseessment of predictor accuracy.
 #'
-#' @param inputdata output from select_regions() \code{inputdata}
+#' @param inputdata output from filter_regions() \code{inputdata}
 #' @param phenodata data set with phenotype information; samples in rows, 
 #' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
@@ -44,7 +44,7 @@
 #' colnames(pheno) <- c("sex","age")
 #'
 #' ## select regions to be used to build the predictor
-#' inputdata <- select_regions(expression=exp, regiondata=regions,
+#' inputdata <- filter_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 #' 
 #' ## build phenotype predictor
@@ -65,7 +65,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 	type <- match.arg(type,c("factor","binary", "numeric") )
 
 	if(is.null(inputdata)) {
-	 	stop('Must specify inputdata to use. This is the output from select_regions()')
+	 	stop('Must specify inputdata to use. This is the output from filter_regions()')
 	}
 	if(is.null(phenodata)) {
 		stop('Must include phenotype file.')
@@ -99,7 +99,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
 		# make predictions
-		minfi:::projectCellType(Y=expressiondata, coefCellType=predictordata$coefEsts) -> predictions
+		minfi:::projectCellType(Y=expressiondata, coefCellType=predictor$coefEsts) -> predictions
 		maxs <- apply(predictions,1,max)
 		esttype = apply(predictions,1,which.highest)
 		predicted <- possNA[esttype]  
@@ -107,20 +107,12 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 	if(type=="numeric"){
 		# prepare data
 		phenouse <- as.numeric(phenodata[,phenotype])
-		datar = as.data.frame(t(expressiondata))
-		colnames(datar) <- names(regiondata)
-		datar$phenouse = phenouse
-		covars = phenodata[,covariates, drop=F]
-		datar = cbind(datar, covars)
-
-		# predict
-		plsClasses <- stats::predict(predictordata$coefEsts, newdata = datar)
-		predicted = plsClasses
-
+		minfi:::projectCellType(Y=expressiondata, coefCellType=predictor$coefEsts) -> predictions
+		predicted = predictions
 	}
 	#summarize data
 	actual <- phenodata[,phenotype]
-	number_sites = length(predictordata$trainingProbes)
+	number_sites = length(predictor$trainingProbes)
 
 	if(type=="factor"){
 		number_match <- sum(predicted==actual)

@@ -8,7 +8,7 @@
 #' @param newregiondata GRanges object containing region info for expression data \code{newregiondata}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'
-#' @return  comat_test An n x m data.frame of the selected regions from the 
+#' @return  covmat_test An n x m data.frame of the selected regions from the 
 #' data set specified by `expression`
 #'
 #' @keywords phenotype, prediction, data set

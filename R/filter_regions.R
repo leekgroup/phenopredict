@@ -1,11 +1,13 @@
-#' Selects regions from prediction set to be used to build the predctor for a 
+#' Filters regions from prediction set to be used to build the predctor for a 
 #' phenotype of interest
 #' 
 #' This function takes phenotype of interest (sex, tissue type, etc.)
 #' input by the user and uses a linear model (accounting for covariates, 
-#' if provided) to select those expressed regions that best predict the 
-#' phenotype of interest. These regions are then used downstream for 
-#' prediction. 
+#' if provided) to filter those expressed regions that best predict the 
+#' phenotype of interest. This is necessary when expression data are provided
+#' in chunks or broken down by chromosome. These regions can then be merged together
+#' with merge_regions() and are then used downstream for prediction. Default filters
+#' top 100 expressed regions from input data.
 #'
 #' @param expression expression data where regions are in rows and samples are 
 #' in columns \code{expression}
@@ -23,7 +25,7 @@
 #' @return  The selected regions, the coverage matrix, and the region info 
 #' to be used for prediction
 #'
-#' @keywords phenotype, prediction, selection
+#' @keywords phenotype, prediction, filtering
 #'
 #' @export
 #' 
@@ -48,16 +50,18 @@
 #' pheno = dplyr::bind_cols(sex,age)
 #' colnames(pheno) <- c("sex","age")
 #'
-#' ## select regions to be used to build the predictor
-#' inputdata <- select_regions(expression=exp, regiondata=regions,
+#' ## filter regions to be used to build the predictor
+#' inputdata <- filter_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
-select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=NULL){
+filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
 
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("GenomicRanges", quietly=TRUE)
 	requireNamespace("stats", quietly=TRUE)
 	requireNamespace("gdata", quietly=TRUE)
+	requireNamespace("splines", quietly=TRUE)
+
 	# requireNamespace("genefilter", quietly=TRUE)
 
 	## first, some checks
@@ -75,9 +79,9 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	if(phenotype %in% covariates) {
 		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
 	}
-	 # if(is.numeric(numRegions)==FALSE) {
-	# 	stop('Specify how many regions per category type you want to select with numRegions')
-	 # }
+	 if(is.numeric(numRegions)==FALSE) {
+	 	stop('Specify how many regions (per category type if categorical) you want to filter with numRegions')
+	  }
 
 	  #### GET INDICES FOR PHENOTYPE OF INTEREST
 	  yGene = expression
@@ -113,20 +117,9 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 				  	}else{
 				  		design = as.data.frame(cbind(x = x))
 				  	}  
-
-			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part
+				## fit model for each level in phenotype
+			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part if you have a lot of regions
 		    	eb = limma::eBayes(fit)
-
-		    	## if no number of regions defined
-	  			## select regions where p<0.05/#num of regions tested
-	  			## AND those with largest fold change difference (1% largest difference in expression)
-		    	if(is.null(numRegions)){
-		    		numreg<-table(limma::topTable(eb,1,nrow(yGene))$P.Value< (0.05/nrow(yGene)) & limma::topTable(eb,1,nrow(yGene))$logFC>=quantile(limma::topTable(eb,1,nrow(yGene))$logFC,0.99))["TRUE"] %>% as.numeric
-		    		if(!is.na(numreg)){
-		    			numRegions = numreg
-		    		}
-		    		else(numRegions=0)
-		    	}
 
 		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
 		    })
@@ -134,29 +127,38 @@ select_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		      # g1mean <- rowMeans(normalized data in grp1)
 		      # g2mean <- rowMeans(normalized data in grp2)
 		      # fc <- g1mean - g2mean
-			
-			# in case not all have the number of probes
-	
+				
 	cellSpecificList= lapply(tstatList, function(x) x[!is.na(x)])
 	trainingProbes <- unique(unlist(cellSpecificList))
+
 		# length(trainingProbes)
 	}
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]
 		  
 	    if(!is.null(covariates)){
-	  	  design = cbind(x = x,mm)
+	  		design = cbind(model.matrix(~ns(get(phenotype),df=5),data=pd),mm)
 	  	}else{
-	  		design = cbind(x = x)
+	  		design = model.matrix(~ns(get(phenotype),df=5), data=pd)
 	  	}
 
-		fit = limma::lmFit(yGene, design)
+		fit = limma::lmFit(yGene,design)
 		eb = limma::eBayes(fit)
-		
-		cellSpecificList = as.numeric(rownames(limma::topTable(eb,1,n=numRegions)))
-		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
-	}
 
+		# > library(splines)
+		# > X <- ns(targets$Time, df=5)
+		# Then fit separate curves for the control and treatment groups:
+		# > Group <- factor(targets$Group)
+		# > design <- model.matrix(~Group*X)
+		# > fit <- lmFit(y, design)
+		# > fit <- eBayes(fit)	
+		
+
+
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,2:6,n=numRegions)))
+		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
+
+	}
 
 
 		# just extract the regions we're going to use to build the predictor

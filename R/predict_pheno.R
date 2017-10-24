@@ -39,8 +39,8 @@
 #' pheno = dplyr::bind_cols(sex,age)
 #' colnames(pheno) <- c("sex","age")
 #'
-#' ## select regions to be used to build the predictor
-#' inputdata <- select_regions(expression=exp, regiondata=regions,
+#' ## filter regions to be used to build the predictor
+#' inputdata <- filter_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 #' 
 #' ## build phenotype predictor
@@ -103,19 +103,8 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		predicted <- possNA[esttype]
 	}
 	if(type=="numeric"){
-		requireNamespace("caret", quietly=TRUE)
-		phenouse <- as.numeric(phenodata[,phenotype])
-		datar = as.data.frame(t(expression))
-		colnames(datar) = names(regiondata)
-		datar$phenouse = phenouse
-		
-		if(!is.null(covariates)){
-			covars = phenodata[,covariates, drop=F]
-			datar = cbind(datar, covars)
-		}
-		# predict
-		plsClasses <- stats::predict(predictordata$coefEsts, newdata = datar)
-		predicted = plsClasses
+		minfi:::projectCellType(Y=expressiondata, coefCellType=predictor$coefEsts) -> predictions
+		predicted = predictions
 	}
 
 	return(predicted)   

@@ -36,10 +36,10 @@
 #' @format A GRanges object with 500 ranges
 "regiondata"
 
-#' Output from select_regions
+#' Output from filter_regions
 #'
 #' A list including a GRanges object (regiondadta), a expression matrix (cm),
-#' and a dataframe (regioninfo). This is the output of select_regions().
+#' and a dataframe (regioninfo). This is the output of filter_regions().
 #' 
 #' @format A list containing three elements
 #' \describe{
@@ -59,5 +59,59 @@
 #' \describe{
 #'   \item{coefEsts}{data.frame, prediction estimates}
 #'   \item{trainingProbes}{vector, probes to be extracted}
+#'   \item{regiondata}{GRanges, genomic ranges region information}
+
 #' }
 "predictor"
+
+#' Prebuilt sex predictor
+#'
+#' This object includes the output from build_predictor 
+#' for sex prediction
+#' 
+#' @format A list for each predicted phenotype contining 
+#' \describe{
+#'   \item{coefEsts}{data.frame, prediction estimates}
+#'   \item{trainingProbes}{vector, probes to be extracted}
+#'   \item{regiondata}{GRanges, genomic ranges region information}
+#' }
+"predictor_sex"
+
+#' Prebuilt tissue predictor
+#'
+#' This object includes the output from build_predictor 
+#' for tissue prediction
+#' 
+#' @format A list for each predicted phenotype contining 
+#' \describe{
+#'   \item{coefEsts}{data.frame, prediction estimates}
+#'   \item{trainingProbes}{vector, probes to be extracted}
+#'   \item{regiondata}{GRanges, genomic ranges region information}
+#' }
+"predictor_tissue"
+
+#' Prebuilt sequencing strategy predictor
+#'
+#' This object includes the output from build_predictor 
+#' for sequencing strategy prediction
+#' 
+#' @format A list for each predicted phenotype contining 
+#' \describe{
+#'   \item{coefEsts}{data.frame, prediction estimates}
+#'   \item{trainingProbes}{vector, probes to be extracted}
+#'   \item{regiondata}{GRanges, genomic ranges region information}
+#' }
+"predictor_sequencingstrategy"
+
+#' Prebuilt sample source predictor
+#'
+#' This object includes the output from build_predictor 
+#' for sample source prediction
+#' 
+#' @format A list for each predicted phenotype contining 
+#' \describe{
+#'   \item{coefEsts}{data.frame, prediction estimates}
+#'   \item{trainingProbes}{vector, probes to be extracted}
+#'   \item{regiondata}{GRanges, genomic ranges region information}
+#' }
+"predictor_samplesource"

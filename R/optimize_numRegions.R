@@ -33,6 +33,7 @@ optimize_numRegions <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, 
 
 accuracies <- c()
 
+
 for(regions in numRegions_set){
 	predictor<-build_predictor(inputdata=inputdata ,phenodata=phenodata, phenotype=phenotype, covariates=NULL,type=type, numRegions=regions)
 
@@ -41,7 +42,7 @@ for(regions in numRegions_set){
 		accuracies <- c(accuracies,as.numeric(predictions_test$summarized[,"percent_correct"]))
 	}
 	if(type=="numeric"){
-		accuracies <- c(accuracies,as.numeric(predictions_test$summarized[,"mean_diff"]))
+		accuracies <- c(accuracies,as.numeric(predictions_test$summarized[,"correlation"]))
 	}
 }
 names(accuracies) <- numRegions_set
@@ -51,7 +52,7 @@ if(type=="factor"){
 	numRegions<-numRegions_set[which_to_use]
 }
 if(type=="numeric"){
-	which_to_use<-min(which(accuracies==min(accuracies)))
+	which_to_use<-min(which(accuracies==max(accuracies)))
 	numRegions<-numRegions_set[which_to_use]
 }
 

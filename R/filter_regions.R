@@ -111,6 +111,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 				tstatList <- lapply(tIndexes, function(i) {
 				    x <- rep(0, ncol(yGene))
 				    x[i] <- 1 
+				    				    x[tIndexes[[1]]] <- 1 
 
 				    if(!is.null(covariates)){
 				  	  design = as.data.frame(cbind(x,mm))
@@ -121,7 +122,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part if you have a lot of regions
 		    	eb = limma::eBayes(fit)
 
-		    	return(as.numeric(rownames(limma::topTable(eb,1,n=numRegions))))
+		    	return(as.numeric(rownames(limma::topTable(eb,coef=1,n=numRegions))))
 		    })
 		      ## Note that in lmFit,
 		      # g1mean <- rowMeans(normalized data in grp1)
@@ -137,9 +138,9 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		x=pd[,phenotype, drop=F]
 		  
 	    if(!is.null(covariates)){
-	  		design = cbind(model.matrix(~ns(get(phenotype),df=5),data=pd),mm)
+	  		design = cbind(model.matrix(~ns(get(phenotype),df=5)-1,data=pd),mm)
 	  	}else{
-	  		design = model.matrix(~ns(get(phenotype),df=5), data=pd)
+	  		design = model.matrix(~ns(get(phenotype),df=5)-1, data=pd )
 	  	}
 
 		fit = limma::lmFit(yGene,design)
@@ -155,7 +156,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		
 
 
-		cellSpecificList = as.numeric(rownames(limma::topTable(eb,2:6,n=numRegions)))
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,coef=1:5,n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
 
 	}

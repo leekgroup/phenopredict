@@ -103,7 +103,7 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		predicted <- possNA[esttype]
 	}
 	if(type=="numeric"){
-		minfi:::projectCellType(Y=expressiondata, coefCellType=predictor$coefEsts) -> predictions
+		minfi:::projectCellType(Y=expression, coefCellType=predictor$coefEsts) -> predictions
 		predicted = predictions
 	}
 

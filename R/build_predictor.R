@@ -60,9 +60,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	requireNamespace("caret", quietly=TRUE)
 	requireNamespace("randomForest", quietly=TRUE)
 	requireNamespace("gdata", quietly=TRUE)
+	requireNamespace("splines", quietly=TRUE)
 
 	## first, some checks
-	 ## first, some checks
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(inputdata)) {
@@ -108,7 +108,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	
 		## instead of using rowttests, use LmFit 
 		## to compute differences & to include covariates
-	  	message("Preparing Model")
+	  	# message("Preparing Model")
 	
 	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
@@ -137,25 +137,26 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		# in case not all have the number of probes
 		cellSpecificList= lapply(tstatList, function(x) x[!is.na(x)])
 		trainingProbes <- unique(unlist(cellSpecificList))
-		regiondata = inputdata$regiondata[trainingProbes]
-
 	}
 	
 	if(type=="numeric"){
 		x=pd[,phenotype, drop=F]
 		  
 	    if(!is.null(covariates)){
-	  		design = cbind(model.matrix(~ns(get(phenotype),df=5),data=pd),mm)
+	  		design = cbind(model.matrix(~ns(get(phenotype),df=5) - 1,data=pd),mm)
 	  	}else{
-	  		design = model.matrix(~ns(get(phenotype),df=5), data=pd)
+	  		design = model.matrix(~ns(get(phenotype),df=5) - 1, data=pd)
 	  	}
 
 		fit = limma::lmFit(yGene,design)
 		eb = limma::eBayes(fit)
 
-		cellSpecificList = as.numeric(rownames(limma::topTable(eb,2:6,n=numRegions)))
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,1:5,n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
 	}
+
+	regiondata = inputdata$regiondata[trainingProbes]
+
 
 
 	##################
@@ -163,7 +164,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	# step 2: use the `minfi::validationCellType` function to get the coefficients for prediction
 	# you have to make the formula to pass, but we have some code in the `minfi:::pickCompProbes` function
 	# it looks something like this, where `probeList` is really `cellSpecificInd` from above
-	message("Calculating Coefficients")
+	# message("Calculating Coefficients")
 	p=yGene
 	
 	## okay, now go ahead...
@@ -179,7 +180,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
 		colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
 		
-		if (ncol(phenoDF) == 2) {
+		if (ncol(phenoDF) == 1) {
 		    X <- as.matrix(phenoDF)
 		    coefEsts <- t(solve(t(X) %*% X) %*% t(X) %*% t(p))
 		}else{

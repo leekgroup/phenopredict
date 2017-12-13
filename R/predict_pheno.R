@@ -103,8 +103,23 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		predicted <- possNA[esttype]
 	}
 	if(type=="numeric"){
-		minfi:::projectCellType(Y=expression, coefCellType=predictor$coefEsts) -> predictions
-		predicted = predictions
+		# minfi:::projectCellType(Y=expression, coefCellType=predictor$coefEsts) -> predictions
+		# predicted = predictions
+
+		## ensure regions are named the same way as in build_predictor
+		expression=as.data.frame(t(expression))
+		colnames(expression) <- paste0("exp_",1:ncol(expression))
+
+		knots_picked = predictor$knots_picked
+		l=5
+		# in predict_pheno do this (set up a model matrix from build_predictor with the same regions, but new data)
+
+
+		Xnew = model.matrix(as.formula(paste0("~",paste( paste0(" ns(",colnames(expression),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=expression)
+
+
+		## generate predictions
+		predicted = as.numeric(as.matrix(t(predictor$coefEsts))) %*% t(Xnew)
 	}
 
 	return(predicted)   

@@ -12,11 +12,13 @@ License: GPL-2
 LazyData: no
 VignetteBuilder: knitr
 Imports:
+  broom,
   gdata,
   GenomeInfoDb,
   GenomicRanges,
   limma,
   minfi,
+  splines,
   stats,
   S4Vectors,
   testthat,

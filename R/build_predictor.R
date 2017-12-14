@@ -179,7 +179,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
 		colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
 		
-		if (ncol(phenoDF) == 1) {
+		if (ncol(phenoDF) == 2) {
 		    X <- as.matrix(phenoDF)
 		    coefEsts <- t(solve(t(X) %*% X) %*% t(X) %*% t(p))
 		}else{

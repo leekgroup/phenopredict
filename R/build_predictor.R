@@ -57,13 +57,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("stats", quietly=TRUE)
 	requireNamespace("minfi", quietly=TRUE)
-	requireNamespace("caret", quietly=TRUE)
-	requireNamespace("randomForest", quietly=TRUE)
 	requireNamespace("gdata", quietly=TRUE)
 	requireNamespace("splines", quietly=TRUE)
 	requireNamespace("broom", quietly=TRUE)
-	requireNamespace("skimr", quietly=TRUE)
-
 
 	## first, some checks
 	type <- match.arg(type,c("factor", "numeric") )
@@ -146,9 +142,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		x=pd[,phenotype, drop=F]
 		  
 	    if(!is.null(covariates)){
-	  		design = cbind(model.matrix(~ns(get(phenotype),df=5) - 1,data=pd),mm)
+	  		design = cbind(model.matrix(~splines::ns(get(phenotype),df=5) - 1,data=pd),mm)
 	  	}else{
-	  		design = model.matrix(~ns(get(phenotype),df=5) - 1, data=pd)
+	  		design = model.matrix(~splines::ns(get(phenotype),df=5) - 1, data=pd)
 	  	}
 
 		fit = limma::lmFit(yGene,design)
@@ -195,26 +191,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 	}
 	if(type=="numeric"){
-		# phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
-		# colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
 		
-		# X <- as.matrix(phenoDF)
-		# coefEsts <- t(solve(t(X) %*% X) %*% t(X) %*% t(p))
-
-		# lm(pd[,phenotype]~ns())
-
-		#gam
-
-		#new data frame with columns pd (name 'phenotype')
-		## columns are 'ER_1'...'ER_n'
-		## fit gam model 
-		# mod<- lm(pheno ~ ns(ER_1,5)+...ns(ER_n,5)) (use paste0()...to make this work - expression so consistent)
-
-		## lm
-
-		## predict
-		## predict.gam(coefEsts )
-
 		# in build predictor do this
 		## check to make sure that 5*ER !> N throw an error, you have more expressed region terms w/ spline than sample size
 		exp_data = as.data.frame(t(p[trainingProbes, ]))
@@ -223,8 +200,6 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		# Prepare model
 		# Fit ns(expression, 5) for each expressed region
 		l=5
-		#exclude spline model for variables where first quantile == 0
-		# nospline<-skim(exp_data) %>% dplyr::filter(stat=="p25") %>% dplyr::filter(formatted==0) %>% select(var)	
 
 		## set knots to values that are nonzero
 		knot_pick <- function(x){
@@ -237,30 +212,26 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 			# space evenly from there 
 			if(minval==1){
 				knot_val <- c(0.2,0.4,0.6,0.8)
+				#Then the basis will include two boundary knots and 4 internal knots, placed at the 20th, 40th, 60th, and 80th quantiles of x, respectively. The boundary knots, by default, are placed at the min and max of x.
+
 			}else{
 				spacing <- (1-vals[minval])/4
 				knot_val <- seq(vals[minval],1,spacing)[1:4]
 			}
 			# define knots
 			knots_x <- quantile(x, probs=knot_val)
-		}
-		
+		}	
 		knots_picked <- apply(exp_data,2,knot_pick)
-		# vars1<-paste(as.character(nospline$var),collapse="+")
-		# vars2<-paste( paste0(" ns(",colnames(exp_data)[!(colnames(exp_data) %in% nospline$var)],",",l,")"),collapse="+")
-
-		#Then the basis will include two boundary knots and 4 internal knots, placed at the 20th, 40th, 60th, and 80th quantiles of x, respectively. The boundary knots, by default, are placed at the min and max of x.
 
 
 		
-		 X = model.matrix(as.formula(paste0("~",paste( paste0(" ns(",colnames(exp_data),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=exp_data)
-		# X = model.matrix(as.formula(paste0("~",vars1,"+",vars2)), data=exp_data)
+		 X = model.matrix(as.formula(paste0("~",paste( paste0(" splines::ns(",colnames(exp_data),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=exp_data)
 
 		## Model data
 		lm1 = lm(pd[,phenotype] ~ X,data=exp_data)
 
 		## get coefEsts
-		coefEsts = tidy(lm1)[,2]
+		coefEsts = broom::tidy(lm1)[,2]
 
 		#get coefficient estimates for regions included in topTable		
 		res <- list(coefEsts = coefEsts, trainingProbes=trainingProbes, regiondata=regiondata, knots_picked=knots_picked)

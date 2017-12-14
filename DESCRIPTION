@@ -1,9 +1,9 @@
 Package: phenopredict
 Title: Predicting phenotypes from RNA-seq expression data
-Version: 0.99.0
+Version: 0.0.0.9000
 Authors@R: person("Shannon", "Ellis", email = "sellis18@jhmi.edu.com", 
 	role = c("aut", "cre"))
-Date: Date: 2017-04-19
+Date: 2017-12-14
 Description: This package provides functionality to build and test phenotype 
   predictors from expression data.
 Depends:
@@ -14,7 +14,6 @@ VignetteBuilder: knitr
 Imports:
   broom,
   gdata,
-  GenomeInfoDb,
   GenomicRanges,
   limma,
   minfi,
@@ -24,13 +23,11 @@ Imports:
   testthat,
   plyr,
   purrr,
-  dplyr,
-  recount,
-  caret,
-  randomForest
+  dplyr
 Suggests:
   BiocStyle,
   devtools,
   knitr,
+  recount,
   roxygen2
 RoxygenNote: 6.0.1

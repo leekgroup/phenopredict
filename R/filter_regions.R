@@ -146,16 +146,6 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		fit = limma::lmFit(yGene,design)
 		eb = limma::eBayes(fit)
 
-		# > library(splines)
-		# > X <- ns(targets$Time, df=5)
-		# Then fit separate curves for the control and treatment groups:
-		# > Group <- factor(targets$Group)
-		# > design <- model.matrix(~Group*X)
-		# > fit <- lmFit(y, design)
-		# > fit <- eBayes(fit)	
-		
-
-
 		cellSpecificList = as.numeric(rownames(limma::topTable(eb,coef=1:5,n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
 

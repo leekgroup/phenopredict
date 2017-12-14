@@ -105,30 +105,17 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 		predicted <- possNA[esttype]  
 	}
 	if(type=="numeric"){
-		# # prepare data
-		# phenouse <- as.numeric(phenodata[,phenotype])
-		# minfi:::projectCellType(Y=expressiondata, coefCellType=predictor$coefEsts) -> predictions
-		# predicted = predictions
-
+		## prepare data
 		## ensure regions are named the same way as in build_predictor
 		expressiondata = as.data.frame(t(expressiondata))
 		colnames(expressiondata) <- paste0("exp_",1:ncol(expressiondata))
 
-		# in predict_pheno do this (set up a model matrix from build_predictor with the same regions, but new data)
-		# Xnew = model.matrix(as.formula(paste0("~",paste( paste0(" ns(",names(expressiondata),",",l,")"),collapse="+"))), data=expressiondata)
-
+	
 		knots_picked = predictor$knots_picked
 		# Prepare model
 		# Fit ns(expression, 5) for each expressed region
 		l=5
-		#exclude spline model for variables where first quantile == 0
-		# nospline<-skim(exp_data) %>% dplyr::filter(stat=="p25") %>% dplyr::filter(formatted==0) %>% select(var)		
-
-		# vars1<-paste(as.character(nospline$var),collapse="+")
-		# vars2<-paste( paste0(" ns(",colnames(exp_data)[!(colnames(exp_data) %in% nospline$var)],",",l,")"),collapse="+")
-		# Xnew = model.matrix(as.formula(paste0("~",vars1,"+",vars2)), data=expressiondata)
-
-		Xnew = model.matrix(as.formula(paste0("~",paste( paste0(" ns(",colnames(expressiondata),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=expressiondata)
+		Xnew = model.matrix(as.formula(paste0("~",paste( paste0(" splines::ns(",colnames(expressiondata),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=expressiondata)
 
 		## generate predictions
 		predicted = as.numeric(as.matrix(t(predictor$coefEsts))%*% t(Xnew))

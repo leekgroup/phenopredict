@@ -2,7 +2,8 @@
 
 export(build_predictor)
 export(extract_data)
+export(filter_regions)
 export(merge_input)
+export(optimize_numRegions)
 export(predict_pheno)
-export(select_regions)
 export(test_predictor)

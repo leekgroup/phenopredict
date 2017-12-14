@@ -27,7 +27,31 @@
 #' 
 #' @examples
 #'
+#' library('GenomicRanges')
+#' library('dplyr')
 #'
+#' ## Make up some some region data
+#' regions <- GRanges(seqnames = 'chr2', IRanges(
+#'      start = c(28971710:28971712, 29555081:29555083, 29754982:29754984),
+#'      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
+#'
+#' ## make up some expression data for 9 rows and 30 people
+#' data(sysdata, package='phenopredict')   
+#' ## includes R object 'cm'
+#' exp= cm[1:length(regions),1:30]
+#'
+#' ## generate some phenotype information
+#' sex = as.data.frame(rep(c("male","female"),each=15))
+#' age = as.data.frame(sample(1:100,30))
+#' pheno = dplyr::bind_cols(sex,age)
+#' colnames(pheno) <- c("sex","age")
+#'
+#' ## filter regions to be used to build the predictor
+#' inputdata <- filter_regions(expression=exp, regiondata=regions,
+#' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=5)
+#' 
+#' regnum <- optimize_numRegions(inputdata=inputdata ,phenodata=pheno, 
+#' phenotype="sex", covariates=NULL,type="factor",numRegions_set=c(3,5))
 
 optimize_numRegions <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL,numRegions_set=c(10,20,30,60,80,100,150,200)){
 

@@ -12,6 +12,7 @@ License: GPL-2
 LazyData: no
 VignetteBuilder: knitr
 Imports:
+  dplyr,
   broom,
   gdata,
   GenomicRanges,
@@ -22,8 +23,7 @@ Imports:
   S4Vectors,
   testthat,
   plyr,
-  purrr,
-  dplyr
+  purrr
 Suggests:
   BiocStyle,
   devtools,

@@ -18,8 +18,8 @@ startTime <- Sys.time()
 ```{r load-packages, message = FALSE, warning = FALSE}
 ## load libraries
 library('devtools')
-# install_github("leekgroup/phenopredict")
-document("/users/sellis/phenopredict")
+install_github("leekgroup/phenopredict")
+# document("/users/sellis/phenopredict")
 library('phenopredict')
 ```
 # Load data
@@ -123,7 +123,7 @@ Code for creating the vignette
 ```{r createVignette, eval=FALSE}
 ## Create the vignette
 library('rmarkdown')
-system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-quickstart.Rmd', 'BiocStyle::html_document'))
+system.time(render('/users/sellis/phenopredict/vignettes/phenopredict-quickstart.Rmd', BiocStyle::html_document()))
 
 ## Extract the R code
 library('knitr')

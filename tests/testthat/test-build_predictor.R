@@ -5,12 +5,12 @@ context("tests build_predictor")
 data(sysdata, package='phenopredict')
 
 number=5
-inputdata = select_regions(expression=cm[1:10,1:10], regiondata=regiondata[1:10] ,phenodata=pheno[1:10,], phenotype="Sex", covariates=c("AGE","BMI"),type="factor", numRegions=number)
+inputdata = filter_regions(expression=cm[1:10,1:10], regiondata=regiondata[1:10] ,phenodata=pheno[1:10,], phenotype="Sex", covariates=c("AGE","BMI"),type="factor", numRegions=number)
 
 num2 = 2
 predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno[1:10,], phenotype="Sex", covariates=NULL,type="factor", numRegions=num2)
 
-test_that("if select_regions() output are correct class", {
+test_that("if filter_regions() output are correct class", {
   expect_is(predictor$regiondata, 'GRanges')
   expect_is(predictor$trainingProbes, 'numeric')
   expect_is(predictor, 'list')

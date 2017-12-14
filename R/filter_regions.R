@@ -138,9 +138,9 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		x=pd[,phenotype, drop=F]
 		  
 	    if(!is.null(covariates)){
-	  		design = cbind(model.matrix(~ns(get(phenotype),df=5)-1,data=pd),mm)
+	  		design = cbind(model.matrix(~splines::ns(get(phenotype),df=5)-1,data=pd),mm)
 	  	}else{
-	  		design = model.matrix(~ns(get(phenotype),df=5)-1, data=pd )
+	  		design = model.matrix(~splines::ns(get(phenotype),df=5)-1, data=pd )
 	  	}
 
 		fit = limma::lmFit(yGene,design)

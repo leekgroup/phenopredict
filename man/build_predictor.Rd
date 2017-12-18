@@ -2,13 +2,13 @@
 % Please edit documentation in R/build_predictor.R
 \name{build_predictor}
 \alias{build_predictor}
-\title{Uses output from select_regions() to build the predictor}
+\title{Uses output from filter_regions() to build the predictor}
 \usage{
 build_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
   covariates = NULL, type = NULL, numRegions = NULL)
 }
 \arguments{
-\item{inputdata}{output from select_regions() \code{inputdata}}
+\item{inputdata}{output from filter_regions() \code{inputdata}}
 
 \item{phenodata}{data set with phenotype information; samples in rows, 
 variables in columns \code{phenodata}}
@@ -25,10 +25,11 @@ to pull out from each chromosome (default: 10) \code{numRegions}}
 }
 \value{
 An n x m data.frame of coefficient estimates and region indices 
-for each of the regions included from select_regions() along with regiondata and indices for trainingProbes
+for each of the regions included from filter_regions() 
+along with regiondata and indices for trainingProbes
 }
 \description{
-This function takes the output from select_regions() and builds the 
+This function takes the output from filter_regions() and builds the 
 phenotype predictor to be used for phenotype prediction in a new 
 data set. This function outputs the fits (coefficient estimates, `coefEsts`)
 from the model for the selectied regions as well as the rows selected 
@@ -55,9 +56,10 @@ age = as.data.frame(sample(1:100,30))
 pheno = dplyr::bind_cols(sex,age)
 colnames(pheno) <- c("sex","age")
 
-## select regions to be used to build the predictor
-inputdata <- select_regions(expression=exp, regiondata=regions,
-	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+## filter regions to be used to build the predictor
+inputdata <- filter_regions(expression=exp, regiondata=regions,
+phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", 
+numRegions=2)
 
 ## build phenotype predictor
 predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, 

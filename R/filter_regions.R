@@ -27,6 +27,7 @@
 #'
 #' @keywords phenotype, prediction, filtering
 #'
+#' @import testthat
 #' @importFrom stats model.matrix as.formula lm quantile
 #' @importFrom gdata drop.levels  
 #' @importFrom splines ns
@@ -116,7 +117,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL,
 
 	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
-		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=F]))
+		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=FALSE]))
 		
 				tstatList <- lapply(tIndexes, function(i) {
 				    x <- rep(0, ncol(yGene))
@@ -146,7 +147,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL,
 		# length(trainingProbes)
 	}
 	if(type=="numeric"){
-		x=pd[,phenotype, drop=F]
+		x=pd[,phenotype, drop=FALSE]
 		  
 	    if(!is.null(covariates)){
 	  		design = cbind(model.matrix(~splines::ns(get(phenotype),df=5)-1,data=pd),mm)

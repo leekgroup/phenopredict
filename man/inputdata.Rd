@@ -3,7 +3,7 @@
 \docType{data}
 \name{inputdata}
 \alias{inputdata}
-\title{Output from select_regions}
+\title{Output from filter_regions}
 \format{A list containing three elements
 \describe{
   \item{regioninfo}{data.matrix, region information}
@@ -14,7 +14,8 @@
 inputdata
 }
 \description{
-A list including a GRanges object (regiondadta), a expression matrix (cm),
-and a dataframe (regioninfo). This is the output of select_regions().
+A list including a GRanges object (regiondadta), 
+a expression matrix (cm),
+and a dataframe (regioninfo). This is the output of filter_regions().
 }
 \keyword{datasets}

@@ -22,6 +22,7 @@ Imports:
   stats,
   S4Vectors,
   testthat,
+  utils,
   plyr,
   purrr
 Suggests:
@@ -30,4 +31,5 @@ Suggests:
   knitr,
   recount,
   roxygen2
+biocViews: ExpressionData, RNASeqData
 RoxygenNote: 6.0.1

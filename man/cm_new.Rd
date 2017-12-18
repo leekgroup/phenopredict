@@ -7,7 +7,8 @@
 \format{A data frame with 500 rows and 4769 different samples (columns)
 than those used in "cm":}
 \source{
-\url{https://bioconductor.org/packages/release/bioc/html/recount.html}
+\url{https://bioconductor.org/packages/
+release/bioc/html/recount.html}
 }
 \usage{
 cm_new

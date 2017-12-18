@@ -6,7 +6,8 @@
 \title{Example phenotype data.}
 \format{A data frame with 4769 rows and 109 columns}
 \source{
-\url{https://bioconductor.org/packages/release/bioc/html/recount.html}
+\url{https://bioconductor.org/packages/
+release/bioc/html/recount.html}
 }
 \usage{
 pheno

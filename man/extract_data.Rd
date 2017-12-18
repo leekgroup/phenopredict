@@ -11,12 +11,13 @@ extract_data(newexpression = NULL, newregiondata = NULL,
 \item{newexpression}{expression data set from which to extract coverage data 
 \code{expression}}
 
-\item{newregiondata}{GRanges object containing region info for expression data \code{newregiondata}}
+\item{newregiondata}{GRanges object containing region info 
+for expression data \code{newregiondata}}
 
 \item{predictordata}{object output from build_predictor \code{predictordata}}
 }
 \value{
-comat_test An n x m data.frame of the selected regions from the 
+covmat_test An n x m data.frame of the selected regions from the 
 data set specified by `expression`
 }
 \description{
@@ -45,7 +46,7 @@ pheno = dplyr::bind_cols(sex,age)
 colnames(pheno) <- c("sex","age")
 
 ## select regions to be used to build the predictor
-inputdata <- select_regions(expression=exp, regiondata=regions,
+inputdata <- filter_regions(expression=exp, regiondata=regions,
 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
 ## build phenotype predictor

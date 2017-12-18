@@ -6,7 +6,8 @@
 \title{Example epression data used to build the predictor.}
 \format{A data frame with 500 rows and 4769 samples (columns):}
 \source{
-\url{https://bioconductor.org/packages/release/bioc/html/recount.html}
+\url{https://bioconductor.org/
+packages/release/bioc/html/recount.html}
 }
 \usage{
 cm

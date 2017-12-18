@@ -9,7 +9,7 @@
 regiondata
 }
 \description{
-A GRanges object with information for the 500 expressed regions included in cm
-and cm_new
+A GRanges object with information for the 500 expressed 
+regions included in cm and cm_new
 }
 \keyword{datasets}

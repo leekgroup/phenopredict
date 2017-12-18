@@ -8,7 +8,8 @@ predict_pheno(inputdata_test = NULL, phenodata = NULL, phenotype = NULL,
   type = c("factor", "numeric"), covariates = NULL, predictordata = NULL)
 }
 \arguments{
-\item{inputdata_test}{Object containing expression data from test set and corresponding GenomicRanges object \code{expression}}
+\item{inputdata_test}{Object containing expression data from test 
+set and corresponding GenomicRanges object \code{expression}}
 
 \item{phenodata}{data set with phenotype information; samples in rows, 
 variables in columns \code{phenodata}}
@@ -50,8 +51,8 @@ age = as.data.frame(sample(1:100,30))
 pheno = dplyr::bind_cols(sex,age)
 colnames(pheno) <- c("sex","age")
 
-## select regions to be used to build the predictor
-inputdata <- select_regions(expression=exp, regiondata=regions,
+## filter regions to be used to build the predictor
+inputdata <- filter_regions(expression=exp, regiondata=regions,
 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
 ## build phenotype predictor

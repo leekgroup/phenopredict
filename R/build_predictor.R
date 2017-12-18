@@ -109,7 +109,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL,
 	 	 }
 	  
 		  ## pull out covariates to be included in the model
-		  covar_data = pd[,covariates, drop=F]
+		  covar_data = pd[,covariates, drop=FALSE]
 		  ##drop unused levels for any factor covariates 
 		  covar_data = gdata::drop.levels(covar_data)
 

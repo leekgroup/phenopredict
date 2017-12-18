@@ -27,7 +27,7 @@ inputdata2$covmat = exp2
 inputdata2$regiondata = regions2
 
 ## merge objects
-inputdata_merged<-merge_input(inputdata_list=list(inputdata1, inputdata2))
+inputdata_merged<-phenopredict::merge_input(inputdata_list=list(inputdata1, inputdata2))
 
 test_that("if merge_input output are correct class", {
   expect_is(inputdata_merged$regiondata, 'GRanges')

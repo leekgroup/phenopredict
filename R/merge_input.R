@@ -17,6 +17,7 @@
 #' @import dplyr 
 #' @importFrom plyr ldply
 #' @importFrom purrr map
+#' @importFrom utils globalVariables
 #' @importFrom GenomicRanges GRangesList
 #'
 #' @export
@@ -58,7 +59,11 @@ merge_input <- function(inputdata_list=NULL){
 	requireNamespace("dplyr", quietly=TRUE)
 	requireNamespace("purrr", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
+	requireNamespace("utils", quietly=TRUE)	
 	requireNamespace("GenomicRanges", quietly=TRUE)	
+
+	utils::globalVariables(".")
+		
 		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% 
 			plyr::ldply(., data.frame) -> covmatrix
 		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>% 

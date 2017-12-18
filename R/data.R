@@ -5,7 +5,8 @@
 #' 
 #' @format A data frame with 500 rows and 4769 samples (columns):
 #'
-#' @source \url{https://bioconductor.org/packages/release/bioc/html/recount.html}
+#' @source \url{https://bioconductor.org/
+#' packages/release/bioc/html/recount.html}
 "cm"
 
 #' Example expression data to be used for prediction.
@@ -16,7 +17,8 @@
 #' @format A data frame with 500 rows and 4769 different samples (columns)
 #' than those used in "cm":
 #'
-#' @source \url{https://bioconductor.org/packages/release/bioc/html/recount.html}
+#' @source \url{https://bioconductor.org/packages/
+#' release/bioc/html/recount.html}
 "cm_new"
 
 #' Example phenotype data.
@@ -25,20 +27,22 @@
 #' 
 #' @format A data frame with 4769 rows and 109 columns
 #'
-#' @source \url{https://bioconductor.org/packages/release/bioc/html/recount.html}
+#' @source \url{https://bioconductor.org/packages/
+#' release/bioc/html/recount.html}
 "pheno"
 
 #' Information about regions included
 #'
-#' A GRanges object with information for the 500 expressed regions included in cm
-#' and cm_new
+#' A GRanges object with information for the 500 expressed 
+#' regions included in cm and cm_new
 #' 
 #' @format A GRanges object with 500 ranges
 "regiondata"
 
 #' Output from filter_regions
 #'
-#' A list including a GRanges object (regiondadta), a expression matrix (cm),
+#' A list including a GRanges object (regiondadta), 
+#' a expression matrix (cm),
 #' and a dataframe (regioninfo). This is the output of filter_regions().
 #' 
 #' @format A list containing three elements

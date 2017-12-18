@@ -164,8 +164,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL,
 
 
 		# just extract the regions we're going to use to build the predictor
-		covmat = yGene[trainingProbes, ,drop=F]
-		regiondata = regiondata[trainingProbes, ,drop=F]
+		covmat = yGene[trainingProbes, ,drop=FALSE]
+		regiondata = regiondata[trainingProbes, ,drop=FALSE]
 
 		# make sure we know which sites those are
 		index = c(as.numeric(trainingProbes))

@@ -26,6 +26,7 @@
 #' @importFrom gdata drop.levels  
 #' @importFrom splines ns
 #' @importFrom limma lmFit topTable eBayes
+#' @importFrom broom tidy
 #'
 #' @export
 #' 
@@ -152,10 +153,11 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL,
 	}
 	
 	if(type=="numeric"){
-		x=pd[,phenotype, drop=F]
+		x=pd[,phenotype, drop=FALSE]
 		  
 	    if(!is.null(covariates)){
-	  		design = cbind(model.matrix(~splines::ns(get(phenotype),df=5) - 1,data=pd),mm)
+	  		design = cbind(model.matrix(~splines::ns(
+	  			get(phenotype),df=5) - 1,data=pd),mm)
 	  	}else{
 	  		design = model.matrix(~splines::ns(get(phenotype),df=5) - 1, data=pd)
 	  	}
@@ -173,9 +175,12 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL,
 
 	##################
 	## Step2 
-	# step 2: use the `minfi::validationCellType` function to get the coefficients for prediction
-	# you have to make the formula to pass, but we have some code in the `minfi:::pickCompProbes` function
-	# it looks something like this, where `probeList` is really `cellSpecificInd` from above
+	# step 2: use the `minfi::validationCellType` function 
+	# to get the coefficients for prediction
+	# you have to make the formula to pass, but we have some code 
+	# in the `minfi:::pickCompProbes` function
+	# it looks something like this, where `probeList` is really 
+	# `cellSpecificInd` from above
 	# message("Calculating Coefficients")
 	p=yGene
 	

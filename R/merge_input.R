@@ -14,6 +14,11 @@
 #'
 #' @keywords phenotype, merge, prediction, expression
 #'
+#' @import dplyr 
+#' @importFrom plyr ldply
+#' @importFrom purrr map
+#' @importFrom GenomicRanges GRangesList
+#'
 #' @export
 #'
 #' @examples
@@ -54,8 +59,10 @@ merge_input <- function(inputdata_list=NULL){
 	requireNamespace("purrr", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
 	requireNamespace("GenomicRanges", quietly=TRUE)	
-		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% plyr::ldply(., data.frame) -> covmatrix
-		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>% GRangesList %>% unlist -> regiondata
+		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% 
+			plyr::ldply(., data.frame) -> covmatrix
+		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>% 
+			GRangesList %>% unlist -> regiondata
 		# this also works (Thanks, Leo!):
 		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata
 		#regioninfo = regioninfo,

@@ -57,7 +57,8 @@
 #' 	phenotype="sex", covariates=NULL,type="factor",predictordata=predictor)	
 	
 
-test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type="factor",predictordata=NULL){	
+test_predictor <- function(inputdata=NULL ,phenodata=NULL, 
+	phenotype=NULL, covariates=NULL,type="factor",predictordata=NULL){	
 	requireNamespace("minfi", quietly=TRUE)
 	requireNamespace("GenomicRanges", quietly=TRUE)
 	requireNamespace("stats", quietly=TRUE)
@@ -65,13 +66,15 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 	type <- match.arg(type,c("factor","binary", "numeric") )
 
 	if(is.null(inputdata)) {
-	 	stop('Must specify inputdata to use. This is the output from filter_regions()')
+	 	stop('Must specify inputdata to use. 
+	 		This is the output from filter_regions()')
 	}
 	if(is.null(phenodata)) {
 		stop('Must include phenotype file.')
 	}
  	if(is.null(predictordata)) {
- 		stop('Must specify predictor data to use. This is the output from build_predictor()')
+ 		stop('Must specify predictor data to use. 
+ 			This is the output from build_predictor()')
  	}
 
  	predictor = predictordata
@@ -99,7 +102,8 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
 		# make predictions
-		minfi:::projectCellType(Y=expressiondata, coefCellType=predictor$coefEsts) -> predictions
+		minfi:::projectCellType(Y=expressiondata, 
+			coefCellType=predictor$coefEsts) -> predictions
 		maxs <- apply(predictions,1,max)
 		esttype = apply(predictions,1,which.highest)
 		predicted <- possNA[esttype]  
@@ -115,7 +119,10 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covar
 		# Prepare model
 		# Fit ns(expression, 5) for each expressed region
 		l=5
-		Xnew = model.matrix(as.formula(paste0("~",paste( paste0(" splines::ns(",colnames(expressiondata),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=expressiondata)
+		Xnew = model.matrix(as.formula(paste0("~",paste( 
+			paste0(" splines::ns(",colnames(expressiondata),",df=",
+			l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),
+			collapse="+"))), data=expressiondata)
 
 		## generate predictions
 		predicted = as.numeric(as.matrix(t(predictor$coefEsts))%*% t(Xnew))

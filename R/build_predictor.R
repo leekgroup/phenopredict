@@ -17,9 +17,15 @@
 #' to pull out from each chromosome (default: 10) \code{numRegions}
 #'
 #' @return An n x m data.frame of coefficient estimates and region indices 
-#' for each of the regions included from filter_regions() along with regiondata and indices for trainingProbes
+#' for each of the regions included from filter_regions() 
+#' along with regiondata and indices for trainingProbes
 #'
 #' @keywords phenotype, prediction, coefficient estimates
+#'
+#' @importFrom stats model.matrix as.formula lm quantile
+#' @importFrom gdata drop.levels  
+#' @importFrom splines ns
+#' @importFrom limma lmFit topTable eBayes
 #'
 #' @export
 #' 
@@ -46,13 +52,15 @@
 #'
 #' ## filter regions to be used to build the predictor
 #' inputdata <- filter_regions(expression=exp, regiondata=regions,
-#' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+#' phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", 
+#' numRegions=2)
 #' 
 #' ## build phenotype predictor
 #' predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, 
 #' 	phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
-build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL, numRegions=NULL){
+build_predictor <- function(inputdata=NULL ,phenodata=NULL, 
+	phenotype=NULL, covariates=NULL,type=NULL, numRegions=NULL){
 	requireNamespace("GenomicRanges", quietly=TRUE)
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("stats", quietly=TRUE)
@@ -65,7 +73,8 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(inputdata)) {
-		stop('Must specify inputdata to use. This is the output from filter_regions()')
+		stop('Must specify inputdata to use. 
+			This is the output from filter_regions()')
 	}
 	if(is.null(phenodata)) {
 		stop('Must include phenotype file.')
@@ -74,13 +83,16 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		stop('Phenotype you are predicting must be either "factor" or "numeric"')
 	}
 	if(phenotype %in% covariates) {
-		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
+		stop('Your phenotype of interest is also in your covariates. 
+			Fix that first, please!')
 	}
 	if(is.numeric(numRegions)==FALSE) {
-	 	stop('Specify how many regions per category type you want to select with numRegions')
+	 	stop('Specify how many regions per category type you want 
+	 		to select with numRegions')
 	 }
 	if(ncol(inputdata$covmat) != nrow(phenodata)) {
-		stop('The number of samples in your inputdata must be the same as in your phenotype file')
+		stop('The number of samples in your inputdata must be the 
+			same as in your phenotype file')
 	}
 
 
@@ -91,7 +103,8 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 	if(!is.null(covariates)){
 	  	if(!all(covariates %in% names(pd))) {
-	  		stop('Covariate included that is not in the prediction set. Please double check "covariates" argument.')
+	  		stop('Covariate included that is not in the prediction set. 
+	  			Please double check "covariates" argument.')
 	 	 }
 	  
 		  ## pull out covariates to be included in the model
@@ -174,7 +187,8 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		pd[,phenotype] <- gsub(" ","",pd[,phenotype])
 		pd[,phenotype] <- factor(pd[,phenotype])
 		# names(pMeans) <- pd[,phenotype]
-		form <- stats::as.formula(sprintf("y ~ %s - 1", paste(levels(droplevels(as.factor(pd[,phenotype]))),
+		form <- stats::as.formula(sprintf("y ~ %s - 1", 
+			paste(levels(droplevels(as.factor(pd[,phenotype]))),
 	    collapse = "+"))) 
 		phenoDF <- as.data.frame(stats::model.matrix(~pd[,phenotype] - 1))
 		colnames(phenoDF) <- sub("^pd\\[, phenotype]", "", colnames(phenoDF))
@@ -183,17 +197,20 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		    X <- as.matrix(phenoDF)
 		    coefEsts <- t(solve(t(X) %*% X) %*% t(X) %*% t(p))
 		}else{
-		    tmp <- minfi:::validationCellType(Y = as.matrix(p), pheno = phenoDF, modelFix = form)
+		    tmp <- minfi:::validationCellType(Y = as.matrix(p), 
+		    	pheno = phenoDF, modelFix = form)
 		    coefEsts <- tmp$coefEsts
 		}
 
-		res <- list(coefEsts = coefEsts, trainingProbes=trainingProbes, regiondata=regiondata)
+		res <- list(coefEsts = coefEsts, trainingProbes=trainingProbes, 
+			regiondata=regiondata)
 
 	}
 	if(type=="numeric"){
 		
 		# in build predictor do this
-		## check to make sure that 5*ER !> N throw an error, you have more expressed region terms w/ spline than sample size
+		## check to make sure that 5*ER !> N throw an error, 
+		## you have more expressed region terms w/ spline than sample size
 		exp_data = as.data.frame(t(p[trainingProbes, ]))
 		colnames(exp_data) <- paste0("exp_",1:ncol(exp_data))
 
@@ -212,7 +229,9 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 			# space evenly from there 
 			if(minval==1){
 				knot_val <- c(0.2,0.4,0.6,0.8)
-				#Then the basis will include two boundary knots and 4 internal knots, placed at the 20th, 40th, 60th, and 80th quantiles of x, respectively. The boundary knots, by default, are placed at the min and max of x.
+				#Then the basis will include two boundary knots and 4 internal knots, 
+				# placed at the 20th, 40th, 60th, and 80th quantiles of x, respectively. 
+				# The boundary knots, by default, are placed at the min and max of x.
 
 			}else{
 				spacing <- (1-vals[minval])/4
@@ -225,7 +244,10 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 
 
 		
-		 X = model.matrix(as.formula(paste0("~",paste( paste0(" splines::ns(",colnames(exp_data),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=exp_data)
+		 X = model.matrix(as.formula(paste0("~",
+		 	paste( paste0(" splines::ns(",colnames(exp_data),",df=",l,", 
+		 	knots=knots_picked[,\'",colnames(knots_picked),"\'])"),
+		 	collapse="+"))), data=exp_data)
 
 		## Model data
 		lm1 = lm(pd[,phenotype] ~ X,data=exp_data)
@@ -234,7 +256,8 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, cova
 		coefEsts = broom::tidy(lm1)[,2]
 
 		#get coefficient estimates for regions included in topTable		
-		res <- list(coefEsts = coefEsts, trainingProbes=trainingProbes, regiondata=regiondata, knots_picked=knots_picked)
+		res <- list(coefEsts = coefEsts, trainingProbes=trainingProbes, 
+			regiondata=regiondata, knots_picked=knots_picked)
 
 	}
 

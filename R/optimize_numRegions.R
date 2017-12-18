@@ -53,20 +53,26 @@
 #' regnum <- optimize_numRegions(inputdata=inputdata ,phenodata=pheno, 
 #' phenotype="sex", covariates=NULL,type="factor",numRegions_set=c(3,5))
 
-optimize_numRegions <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=NULL,numRegions_set=c(10,20,30,60,80,100,150,200)){
+optimize_numRegions <- function(inputdata=NULL ,phenodata=NULL, phenotype=NULL, 
+	covariates=NULL,type=NULL,numRegions_set=c(10,20,30,60,80,100,150,200)){
 
 accuracies <- c()
 
 
 for(regions in numRegions_set){
-	predictor<-build_predictor(inputdata=inputdata ,phenodata=phenodata, phenotype=phenotype, covariates=NULL,type=type, numRegions=regions)
+	predictor<-build_predictor(inputdata=inputdata ,phenodata=phenodata, 
+		phenotype=phenotype, covariates=NULL,type=type, numRegions=regions)
 
-	predictions_test <-test_predictor(inputdata=inputdata ,phenodata=pheno, phenotype=phenotype,covariates=NULL,type=type,predictordata=predictor )
+	predictions_test <-test_predictor(inputdata=inputdata,
+		phenodata=phenodata, phenotype=phenotype,covariates=NULL,
+		type=type,predictordata=predictor )
 	if(type=="factor"){
-		accuracies <- c(accuracies,as.numeric(predictions_test$summarized[,"percent_correct"]))
+		accuracies <- c(accuracies,as.numeric(
+			predictions_test$summarized[,"percent_correct"]))
 	}
 	if(type=="numeric"){
-		accuracies <- c(accuracies,as.numeric(predictions_test$summarized[,"correlation"]))
+		accuracies <- c(accuracies,as.numeric(
+			predictions_test$summarized[,"correlation"]))
 	}
 }
 names(accuracies) <- numRegions_set

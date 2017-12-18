@@ -4,7 +4,8 @@
 #' interest using selected regions upon which predictor 
 #' has been built
 #'
-#' @param inputdata_test Object containing expression data from test set and corresponding GenomicRanges object \code{expression}
+#' @param inputdata_test Object containing expression data from test 
+#' set and corresponding GenomicRanges object \code{expression}
 #' @param phenodata data set with phenotype information; samples in rows, 
 #' variables in columns \code{phenodata}
 #' @param phenotype phenotype of interest \code{phenotype}
@@ -15,6 +16,9 @@
 #' @return A vector of predicted phenoyptes
 #'
 #' @keywords phenotype, prediction, data set
+#'
+#' @importFrom splines ns
+#' @importFrom GenomicRanges findOverlaps 
 #'
 #' @export
 #'
@@ -62,18 +66,23 @@
 #' predictions <- predict_pheno(inputdata_test=test_data, phenodata=pheno, 
 #' phenotype="sex", type="factor" ,covariates=NULL, predictordata = predictor)
 
-predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, type=c("factor","numeric") ,covariates=NULL, predictordata = NULL){	
+predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, 
+	type=c("factor","numeric") ,covariates=NULL, predictordata = NULL){	
 	requireNamespace("stats", quietly=TRUE)
 
 	#check to makes sure same regions are included 
 	if(length(inputdata_test$regiondata) != length(predictordata$regiondata)) {
-		stop('The same regions used to build your predictor must be the regions used in your test set.')
+		stop('The same regions used to build your predictor 
+			must be the regions used in your test set.')
 	}
-	if(length(GenomicRanges::findOverlaps(inputdata_test$regiondata,predictordata$regiondata))!=length(predictordata$regiondata)){
-		stop('Some of the regions in your test expression set are not the same as those in expression set used to build your predictor')
+	if(length(GenomicRanges::findOverlaps(inputdata_test$regiondata,
+	predictordata$regiondata))!=length(predictordata$regiondata)){
+		stop('Some of the regions in your test expression set 
+			are not the same as those in expression set used to build your predictor')
 	}
 	if(!(identical(names(inputdata_test$regiondata),names(predictordata$regiondata)))){
-		stop('Make sure your test expression set is in the same order as your prediction expression set!')
+		stop('Make sure your test expression set is in the 
+			same order as your prediction expression set!')
 	}
 
 
@@ -97,7 +106,8 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
 		# make predictions
-		minfi:::projectCellType(Y=expression, coefCellType=predictordata$coefEsts) -> predictions
+		minfi:::projectCellType(Y=expression, 
+			coefCellType=predictordata$coefEsts) -> predictions
 		maxs <- apply(predictions,1,max)
 		esttype = apply(predictions,1,which.highest)
 		predicted <- possNA[esttype]
@@ -108,14 +118,18 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL, t
 		expression=as.data.frame(t(expression))
 		colnames(expression) <- paste0("exp_",1:ncol(expression))
 
-		knots_picked = predictor$knots_picked
+		knots_picked = predictordata$knots_picked
 		l=5
-		# in predict_pheno do this (set up a model matrix from build_predictor with the same regions, but new data)
-		Xnew = model.matrix(as.formula(paste0("~",paste( paste0(" splines::ns(",colnames(expression),",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),"\'])"),collapse="+"))), data=expression)
+		# in predict_pheno do this (set up a model matrix from 
+		# build_predictor with the same regions, but new data)
+		Xnew = model.matrix(as.formula(paste0(
+			"~",paste( paste0(" splines::ns(",colnames(expression),
+			",df=",l,", knots=knots_picked[,\'",colnames(knots_picked),
+			"\'])"),collapse="+"))), data=expression)
 
 
 		## generate predictions
-		predicted = as.numeric(as.matrix(t(predictor$coefEsts))) %*% t(Xnew)
+		predicted = as.numeric(as.matrix(t(predictordata$coefEsts))) %*% t(Xnew)
 	}
 
 	return(predicted)   

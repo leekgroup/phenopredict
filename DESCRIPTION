@@ -7,7 +7,7 @@ Date: 2017-12-14
 Description: This package provides functionality to build and test phenotype 
   predictors from expression data.
 Depends:
-    R (>= 3.3.1)
+    R (>= 3.4)
 License: GPL-2
 LazyData: no
 VignetteBuilder: knitr

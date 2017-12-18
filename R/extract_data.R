@@ -5,7 +5,8 @@
 #'
 #' @param newexpression expression data set from which to extract coverage data 
 #' \code{expression}
-#' @param newregiondata GRanges object containing region info for expression data \code{newregiondata}
+#' @param newregiondata GRanges object containing region info 
+#' for expression data \code{newregiondata}
 #' @param predictordata object output from build_predictor \code{predictordata}
 #'
 #' @return  covmat_test An n x m data.frame of the selected regions from the 
@@ -72,7 +73,8 @@ extract_data <- function(newexpression=NULL, newregiondata=NULL, predictordata=N
 		stop('Must specify genomic region information to use.')
 	}
  	if(is.null(predictordata)) {
-		stop('Must specify predictor data to use. This is the output from build_predictor()')
+		stop('Must specify predictor data to use. This is the 
+			output from build_predictor()')
 	}
 
 	  #define function to extract regions when more than one input file supplied
@@ -85,35 +87,14 @@ extract_data <- function(newexpression=NULL, newregiondata=NULL, predictordata=N
 	covmat_test = newexpression[S4Vectors::subjectHits(sites),]
 	regiondata_test = newregiondata[S4Vectors::subjectHits(sites)]
 
-	#if covmat is only one region, make sure it's still correct format and samples are in columns with regions in rows
+	#if covmat is only one region, make sure it's still 
+	## correct format and samples are in columns with regions in rows
 	if(length(sites)==1){
 		covmat_test = as.data.frame(t(covmat_test))
 	}
 
 	res <- list(covmat=covmat_test, regiondata=regiondata_test)
 	return(res)
-
-	#if we're extracting over multiple input objects (aka if you had to use merge_input(), look here:
-	#   if(is.list(expression)){
-	#   		if(!is.list(inputdata)) {
-	#   			stop('If >1 expression file is input, inputdata must also be a list.')
-	#   		}
-	#   		#extract regions from each expression data set before merging [using inputdata$regioninfo$index]
-	#   		Map(getexp,newexpression,inputdata) -> tmp
-	#   		#combine across dataframes
-	#   		ldply(tmp, data.frame) -> covmat_test
-	
-	# #but if you only have one inputdata, it's pretty straightforward, and look here:
-	#  }else{
-	# 	yGene=expression
-
-	# 	#extract appropriate regions
-	# 	covmat_test<-yGene[unique(inputdata$regioninfo$index),]
-		
-	# }
-	# #either way, let's just pull out the regions we actually want to use to build the predictor
-	# covmat_test = covmat_test[predictor$trainingProbes,]
-	# return(covmat_test)
 }
 
 

@@ -27,6 +27,11 @@
 #'
 #' @keywords phenotype, prediction, filtering
 #'
+#' @importFrom stats model.matrix as.formula lm quantile
+#' @importFrom gdata drop.levels  
+#' @importFrom splines ns
+#' @importFrom limma lmFit topTable eBayes
+#'
 #' @export
 #' 
 #' @examples
@@ -54,7 +59,8 @@
 #' inputdata <- filter_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
-filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
+filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, 
+	phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
 
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("GenomicRanges", quietly=TRUE)
@@ -68,7 +74,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(regiondata)) {
-		stop('Must include a GenomicRanges object corresponding to the regions included in expession')
+		stop('Must include a GenomicRanges object corresponding 
+			to the regions included in expession')
 	}
 	if(is.null(expression)) {
 		stop('Expression Data must be supplied.')
@@ -77,10 +84,12 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 		stop('Phenotype you are predicting must be either "factor" or "numeric"')
 	}
 	if(phenotype %in% covariates) {
-		stop('Your phenotype of interest is also in your covariates. Fix that first, please!')
+		stop('Your phenotype of interest is also in your covariates. 
+			Fix that first, please!')
 	}
 	 if(is.numeric(numRegions)==FALSE) {
-	 	stop('Specify how many regions (per category type if categorical) you want to filter with numRegions')
+	 	stop('Specify how many regions (per category type if 
+	 		categorical) you want to filter with numRegions')
 	  }
 
 	  #### GET INDICES FOR PHENOTYPE OF INTEREST
@@ -89,7 +98,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 	  
 	  if(!is.null(covariates)){
 	  	if(!all(covariates %in% names(pd))) {
-	  		stop('Covariate included that is not in the prediction set. Please double check "covariates" argument.')
+	  		stop('Covariate included that is not in the prediction set. 
+	  			Please double check "covariates" argument.')
 	 	 }
 	  
 		  ## pull out covariates to be included in the model
@@ -119,7 +129,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL, phe
 				  		design = as.data.frame(cbind(x = x))
 				  	}  
 				## fit model for each level in phenotype
-			    fit = limma::lmFit(yGene,design)			##### this is the SLOWWWW part if you have a lot of regions
+			    fit = limma::lmFit(yGene,design)			
+			    ##### ^^this is the SLOWWWW part if you have a lot of regions
 		    	eb = limma::eBayes(fit)
 
 		    	return(as.numeric(rownames(limma::topTable(eb,coef=1,n=numRegions))))

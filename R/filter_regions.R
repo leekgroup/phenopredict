@@ -103,7 +103,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL,
 	 	 }
 	  
 		  ## pull out covariates to be included in the model
-		  covar_data = as.data.frame(pd[,covariates, drop=F])
+		  covar_data = as.data.frame(pd[,covariates, drop=FALSE])
 		  covar_data = gdata::drop.levels(covar_data)
 
 		## instead of using rowttests, use LmFit 

@@ -61,8 +61,6 @@ merge_input <- function(inputdata_list=NULL){
 	requireNamespace("plyr", quietly=TRUE)
 	requireNamespace("utils", quietly=TRUE)	
 	requireNamespace("GenomicRanges", quietly=TRUE)	
-
-	utils::globalVariables(".")
 		
 		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% 
 			plyr::ldply(., data.frame) -> covmatrix

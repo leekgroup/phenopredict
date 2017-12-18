@@ -125,7 +125,7 @@ build_predictor <- function(inputdata=NULL ,phenodata=NULL,
 	
 	if(type=="factor"){  	
 	  	## get list indeces for each group in the factor
-		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=F]))
+		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=FALSE]))
 		
 				tstatList <- lapply(tIndexes, function(i) {
 				    x <- rep(0, ncol(yGene))

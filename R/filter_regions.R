@@ -4,10 +4,11 @@
 #' This function takes phenotype of interest (sex, tissue type, etc.)
 #' input by the user and uses a linear model (accounting for covariates,
 #' if provided) to filter those expressed regions that best predict the
-#' phenotype of interest. This is necessary when expression data are provided
-#' in chunks or broken down by chromosome. These regions can then be merged together
-#' with merge_regions() and are then used downstream for prediction. Default filters
-#' top 100 expressed regions from input data.
+#' phenotype of interest. This is necessary when expression data are
+#' provided in chunks or broken down by chromosome. These regions can
+#' then be merged together with merge_regions() and are then used
+#' downstream for prediction. Default filters top 100 expressed
+#' regions from input data.
 #'
 #' @param expression expression data where regions are in rows and samples are
 #' in columns \code{expression}
@@ -34,8 +35,7 @@
 #'
 #' @export
 #'
-#' @exa
-mples
+#' @examples
 #'
 #' library('GenomicRanges')
 #' library('dplyr')
@@ -58,22 +58,14 @@ mples
 #'
 #' ## filter regions to be used to build the predictor
 #' inputdata <- filter_regions(expression=exp, regiondata=regions,
-#' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+#' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor",
+#' 	numRegions=2)
 
 filter_regions <- function(expression=NULL, regiondata=NULL,
                            phenodata=NULL, phenotype=NULL, covariates=NULL,
                            type=c("factor", "numeric"), numRegions=100){
 
-	requireNamespace("limma", quietly=TRUE)
-	requireNamespace("GenomicRanges", quietly=TRUE)
-	requireNamespace("stats", quietly=TRUE)
-	requireNamespace("gdata", quietly=TRUE)
-	requireNamespace("splines", quietly=TRUE)
-
-	# requireNamespace("genefilter", quietly=TRUE)
-
 	## first, some checks
-
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(regiondata)) {
@@ -111,7 +103,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL,
 
 		## instead of using rowttests, use LmFit
 		## to compute differences & to include covariates
-	  	covars <- stats::as.formula(paste("~ ", paste(covariates,collapse="+")))
+	  	covars <- stats::as.formula(paste("~ ",
+	  	                                  paste(covariates,collapse="+")))
 	  	mm = stats::model.matrix(covars, data=covar_data)
 	  }
 
@@ -119,7 +112,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL,
 
 	if(type=="factor"){
 	  	## get list indeces for each group in the factor
-		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype, drop=FALSE]))
+		tIndexes <- split(seq_len(nrow(pd)), droplevels(pd[,phenotype,
+		                                                   drop=FALSE]))
 
 				tstatList <- lapply(tIndexes, function(i) {
 				    x <- rep(0, ncol(yGene))
@@ -136,7 +130,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL,
 			    ##### ^^this is the SLOWWWW part if you have a lot of regions
 		    	eb = limma::eBayes(fit)
 
-		    	return(as.numeric(rownames(limma::topTable(eb,coef=1,n=numRegions))))
+		    	return(as.numeric(rownames(limma::topTable(eb,coef=1,
+		    	                                           n=numRegions))))
 		    })
 		      ## Note that in lmFit,
 		      # g1mean <- rowMeans(normalized data in grp1)
@@ -152,15 +147,19 @@ filter_regions <- function(expression=NULL, regiondata=NULL,
 		x=pd[,phenotype, drop=FALSE]
 
 	    if(!is.null(covariates)){
-	  		design = cbind(model.matrix(~splines::ns(get(phenotype),df=5)-1,data=pd),mm)
+	  		design = cbind(model.matrix(~splines::ns(get(phenotype),
+	  		                                         df=5)-1,data=pd),mm)
 	  	}else{
-	  		design = model.matrix(~splines::ns(get(phenotype),df=5)-1, data=pd )
+	  		design = model.matrix(~splines::ns(get(phenotype),
+	  		                                   df=5)-1, data=pd )
 	  	}
 
 		fit = limma::lmFit(yGene,design)
 		eb = limma::eBayes(fit)
 
-		cellSpecificList = as.numeric(rownames(limma::topTable(eb,coef=1:5,n=numRegions)))
+		cellSpecificList = as.numeric(rownames(limma::topTable(eb,coef=1:5,
+
+		                                                       n=numRegions)))
 		trainingProbes = unique(cellSpecificList[!is.na(cellSpecificList)])
 
 	}
@@ -177,7 +176,8 @@ filter_regions <- function(expression=NULL, regiondata=NULL,
 		regioninfo = data.frame(chr=chr,type=type,
 		                  index=index)
 
-		res <- list(regiondata=regiondata, covmat=covmat, regioninfo=regioninfo )
+		res <- list(regiondata=regiondata, covmat=covmat,
+		            regioninfo=regioninfo )
 		return(res)
 
 

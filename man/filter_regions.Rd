@@ -37,10 +37,11 @@ to be used for prediction
 This function takes phenotype of interest (sex, tissue type, etc.)
 input by the user and uses a linear model (accounting for covariates,
 if provided) to filter those expressed regions that best predict the
-phenotype of interest. This is necessary when expression data are provided
-in chunks or broken down by chromosome. These regions can then be merged together
-with merge_regions() and are then used downstream for prediction. Default filters
-top 100 expressed regions from input data.
+phenotype of interest. This is necessary when expression data are
+provided in chunks or broken down by chromosome. These regions can
+then be merged together with merge_regions() and are then used
+downstream for prediction. Default filters top 100 expressed
+regions from input data.
 }
 \examples{
 
@@ -65,7 +66,8 @@ colnames(pheno) <- c("sex","age")
 
 ## filter regions to be used to build the predictor
 inputdata <- filter_regions(expression=exp, regiondata=regions,
-	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor",
+	numRegions=2)
 }
 \keyword{filtering}
 \keyword{phenotype,}

@@ -56,18 +56,13 @@
 #' inputdata_merged<-merge_input(inputdata_list=list(inputdata1, inputdata2))
 
 merge_input <- function(inputdata_list=NULL){
-	requireNamespace("dplyr", quietly=TRUE)
-	requireNamespace("purrr", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
-	requireNamespace("utils", quietly=TRUE)
-	requireNamespace("GenomicRanges", quietly=TRUE)
-
 		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>%
 			plyr::ldply(., data.frame) -> covmatrix
 		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>%
 			GRangesList %>% unlist -> regiondata
 		# this also works (Thanks, Leo!):
-		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata
+		# do.call(c, map(inputdata_list,
+		#               function(x){return(x$regiondata)}) ) -> regiondata
 		#regioninfo = regioninfo,
 		res <- list( covmat=covmatrix, regiondata = regiondata)
 		return(res)

@@ -11,7 +11,7 @@ optimize_numRegions(inputdata = NULL, phenodata = NULL, phenotype = NULL,
 \arguments{
 \item{inputdata}{output from filter_regions() \code{inputdata}}
 
-\item{phenodata}{data set with phenotype information; samples in rows, 
+\item{phenodata}{data set with phenotype information; samples in rows,
 variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
@@ -27,14 +27,14 @@ variables in columns \code{phenodata}}
 Prediction accuracies across each numRegions argument tested
 }
 \description{
-This function takes a list of possible options for 
-the numRegions argument of build_predictor. 
-Using this set of possible numRegions and expression data 
-(the training data / output of filter_regions()), 
-this function builds a predictor for each possible 
-numRegions. Prediction accuracy is then calculated  
+This function takes a list of possible options for
+the numRegions argument of build_predictor.
+Using this set of possible numRegions and expression data
+(the training data / output of filter_regions()),
+this function builds a predictor for each possible
+numRegions. Prediction accuracy is then calculated
 across varying numbers of regions. The numRegions argument
-that optimizes accuracy in the training data can then be 
+that optimizes accuracy in the training data can then be
 used in build_predictor.
 }
 \examples{
@@ -48,7 +48,7 @@ regions <- GRanges(seqnames = 'chr2', IRanges(
      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
 
 ## make up some expression data for 9 rows and 30 people
-data(sysdata, package='phenopredict')   
+data(sysdata, package='phenopredict')
 ## includes R object 'cm'
 exp= cm[1:length(regions),1:30]
 
@@ -60,9 +60,10 @@ colnames(pheno) <- c("sex","age")
 
 ## filter regions to be used to build the predictor
 inputdata <- filter_regions(expression=exp, regiondata=regions,
-	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=5)
+	phenodata=pheno, phenotype="sex", covariates=NULL,
+	type="factor", numRegions=5)
 
-regnum <- optimize_numRegions(inputdata=inputdata ,phenodata=pheno, 
+regnum <- optimize_numRegions(inputdata=inputdata ,phenodata=pheno,
 phenotype="sex", covariates=NULL,type="factor",numRegions_set=c(3,5))
 }
 \keyword{optimization}

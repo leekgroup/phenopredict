@@ -45,7 +45,8 @@
 #'
 #' ## select regions to be used to build the predictor
 #' inputdata <- filter_regions(expression=exp, regiondata=regions,
-#' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+#' 	phenodata=pheno, phenotype="sex",
+#' 	covariates=NULL,type="factor", numRegions=2)
 #'
 #' ## build phenotype predictor
 #' predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno,
@@ -59,9 +60,6 @@
 
 test_predictor <- function(inputdata=NULL ,phenodata=NULL,
 	phenotype=NULL, covariates=NULL,type="factor",predictordata=NULL){
-
-  requireNamespace("GenomicRanges", quietly=TRUE)
-	requireNamespace("stats", quietly=TRUE)
 
 	type <- match.arg(type,c("factor","binary", "numeric") )
 
@@ -93,7 +91,8 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL,
 	regiondata = inputdata$regiondata[predictor$trainingProbes]
 
 
-	ov = GenomicRanges::findOverlaps(inputdata$regiondata, predictor$regiondata)
+	ov = GenomicRanges::findOverlaps(inputdata$regiondata,
+	                                 predictor$regiondata)
 
 
 	## predictions
@@ -135,7 +134,8 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL,
 		number_match <- sum(predicted==actual)
 		perc_correct = sum(predicted==actual)/length(actual)
 		summarized = cbind(number_sites,number_match, perc_correct)
-		colnames(summarized) <- c("sites_tested", "number_correct", "percent_correct")
+		colnames(summarized) <- c("sites_tested",
+		                          "number_correct", "percent_correct")
 	}
 	if(type=="numeric"){
 		correlation = stats::cor(predicted, actual)

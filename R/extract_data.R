@@ -40,7 +40,8 @@
 #'
 #' ## select regions to be used to build the predictor
 #' inputdata <- filter_regions(expression=exp, regiondata=regions,
-#' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+#' 	phenodata=pheno, phenotype="sex",
+#' 	covariates=NULL,type="factor", numRegions=2)
 #'
 #' ## build phenotype predictor
 #' predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno,
@@ -54,48 +55,50 @@
 #' ## generate new expressiondata set for prediction
 #' exp_new= cm_new[1:length(regions),1:30]
 #' ## extract test data
-#' test_data<-extract_data(newexpression=exp_new, newregiondata=predictor$regiondata,
-#' 	predictordata=predictor)
+#' test_data<-extract_data(newexpression=exp_new,
+#' newregiondata=predictor$regiondata, predictordata=predictor)
 
-extract_data <- function(newexpression=NULL, newregiondata=NULL, predictordata=NULL){
-	# requireNamespace('plyr', quietly=TRUE)
-	##########
-	### Get the unique regions
-	### from the GTEX selection proces
-	##########
-	requireNamespace('GenomicRanges', quietly=TRUE)
-	requireNamespace('S4Vectors', quietly=TRUE)
-	# first, some checks
-		##ADD thes
-	if(is.null(newexpression)) {
-		stop('Expression Data must be supplied.')
-	}
-	if(is.null(newregiondata)) {
-		stop('Must specify genomic region information to use.')
-	}
- 	if(is.null(predictordata)) {
-		stop('Must specify predictor data to use. This is the
+extract_data <- function(newexpression=NULL, newregiondata=NULL,
+                         predictordata=NULL){
+  # requireNamespace('plyr', quietly=TRUE)
+  ##########
+  ### Get the unique regions
+  ### from the GTEX selection proces
+  ##########
+  requireNamespace('GenomicRanges', quietly=TRUE)
+  requireNamespace('S4Vectors', quietly=TRUE)
+  # first, some checks
+  ##ADD thes
+  if(is.null(newexpression)) {
+    stop('Expression Data must be supplied.')
+  }
+  if(is.null(newregiondata)) {
+    stop('Must specify genomic region information to use.')
+  }
+  if(is.null(predictordata)) {
+    stop('Must specify predictor data to use. This is the
 			output from build_predictor()')
-	}
+  }
 
-	  #define function to extract regions when more than one input file supplied
-	  # getexp <- function(x,y){
-	  # 				out<-x[y$regioninfo$index,]
-	  # 				return(out)
-	  # 			}
+  # define function to extract regions when more
+  # than one input file supplied
+  # getexp <- function(x,y){
+  # 				out<-x[y$regioninfo$index,]
+  # 				return(out)
+  # 			}
 
-	sites <- GenomicRanges::findOverlaps(predictordata$regiondata, newregiondata)
-	covmat_test = newexpression[S4Vectors::subjectHits(sites),]
-	regiondata_test = newregiondata[S4Vectors::subjectHits(sites)]
+  sites <- GenomicRanges::findOverlaps(predictordata$regiondata, newregiondata)
+  covmat_test = newexpression[S4Vectors::subjectHits(sites),]
+  regiondata_test = newregiondata[S4Vectors::subjectHits(sites)]
 
-	#if covmat is only one region, make sure it's still
-	## correct format and samples are in columns with regions in rows
-	if(length(sites)==1){
-		covmat_test = as.data.frame(t(covmat_test))
-	}
+  #if covmat is only one region, make sure it's still
+  ## correct format and samples are in columns with regions in rows
+  if(length(sites)==1){
+    covmat_test = as.data.frame(t(covmat_test))
+  }
 
-	res <- list(covmat=covmat_test, regiondata=regiondata_test)
-	return(res)
+  res <- list(covmat=covmat_test, regiondata=regiondata_test)
+  return(res)
 }
 
 

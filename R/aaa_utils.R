@@ -2,7 +2,6 @@
 
 ## both functions' below are borrowed from the minfi
 ## bioconductor package
-##
 
 projectCellType = function (Y,
                             coefCellType,
@@ -39,18 +38,18 @@ projectCellType = function (Y,
       }
       for (i in 1:nSubj) {
         obs <- which(!is.na(Y[, i]))
-        Dmat <- crossprod(Xmat[obs,])
-        mixCoef[i,] <- solve.QP(Dmat,
-                                crossprod(Xmat[obs,],
-                                          Y[obs, i]), Amat, b0vec)$sol
+        Dmat <- crossprod(Xmat[obs, ])
+        mixCoef[i, ] <- solve.QP(Dmat,
+                                 crossprod(Xmat[obs, ],
+                                           Y[obs, i]), Amat, b0vec)$sol
       }
     }
     else {
       for (i in 1:nSubj) {
         obs <- which(!is.na(Y[, i]))
-        Dmat <- crossprod(Xmat[obs,])
-        mixCoef[i,] <- solve(Dmat, t(Xmat[obs,]) %*%
-                               Y[obs, i])
+        Dmat <- crossprod(Xmat[obs, ])
+        mixCoef[i, ] <- solve(Dmat, t(Xmat[obs, ]) %*%
+                                Y[obs, i])
       }
     }
     return(mixCoef)
@@ -73,7 +72,7 @@ validationCellType = function (Y,
   sizeModel <- dim(xTest)[2]
   M <- dim(Y)[1]
   if (is.null(L.forFstat)) {
-    L.forFstat <- diag(sizeModel)[-1,]
+    L.forFstat <- diag(sizeModel)[-1, ]
     colnames(L.forFstat) <- colnames(xTest)
     rownames(L.forFstat) <- colnames(xTest)[-1]
   }
@@ -85,21 +84,21 @@ validationCellType = function (Y,
   if (verbose)
     cat("[validationCellType] ")
   for (j in 1:M) {
-    ii <- !is.na(Y[j,])
+    ii <- !is.na(Y[j, ])
     nObserved[j] <- sum(ii)
-    pheno$y <- Y[j,]
+    pheno$y <- Y[j, ]
     if (j %% round(M / 10) == 0 && verbose)
       cat(".")
     try({
       if (!is.null(modelBatch)) {
         fit <- try(lme(modelFix, random = modelBatch,
-                       data = pheno[ii,]))
+                       data = pheno[ii, ]))
         OLS <- inherits(fit, "try-error")
       }
       else
         OLS <- TRUE
       if (OLS) {
-        fit <- lm(modelFix, data = pheno[ii,])
+        fit <- lm(modelFix, data = pheno[ii, ])
         fitCoef <- fit$coef
         sigmaResid[j] <- summary(fit)$sigma
         sigmaIcept[j] <- 0
@@ -111,7 +110,7 @@ validationCellType = function (Y,
         sigmaIcept[j] <- sqrt(getVarCov(fit)[1])
         nClusters[j] <- length(fit$coef$random[[1]])
       }
-      coefEsts[j,] <- fitCoef
+      coefEsts[j, ] <- fitCoef
       coefVcovs[[j]] <- vcov(fit)
       useCoef <- L.forFstat %*% fitCoef
       useV <- L.forFstat %*% coefVcovs[[j]] %*% t(L.forFstat)

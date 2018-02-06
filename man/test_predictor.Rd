@@ -55,7 +55,8 @@ colnames(pheno) <- c("sex","age")
 
 ## select regions to be used to build the predictor
 inputdata <- filter_regions(expression=exp, regiondata=regions,
-	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
+	phenodata=pheno, phenotype="sex",
+	covariates=NULL,type="factor", numRegions=2)
 
 ## build phenotype predictor
 predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno,

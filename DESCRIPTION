@@ -1,6 +1,6 @@
 Package: phenopredict
 Title: Predicting phenotypes from RNA-seq expression data
-Version: 0.99.1
+Version: 0.99.0
 Authors@R: person("Shannon", "Ellis", email = "sellis18@jhmi.edu", 
 	role = c("aut", "cre"))
 Date: 2017-12-14

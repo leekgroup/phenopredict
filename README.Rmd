@@ -4,7 +4,7 @@ output: github_document
 
 [![Travis-CI Build Status](https://travis-ci.org/leekgroup/phenopredict.svg?branch=master)](https://travis-ci.org/leekgroup/phenopredict)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/leekgroup/phenopredict?branch=master&svg=true)](https://ci.appveyor.com/project/leekgroup/phenopredict)
-[![Coverage Status](https://img.shields.io/codecov/c/github/leekgroup/phenopredict/master.svg)](https://codecov.io/github/leekgroup/phenopredict?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/leekgroup/phenopredict.svg)](https://coveralls.io/r/leekgroup/phenopredict?branch=master)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -18,21 +18,32 @@ knitr::opts_chunk$set(
 
 # phenopredict
 
-The goal of phenopredict is to ...
+The goal of phenopredict is to build predictors from expression data (RNA-Seq) that will predict necessary phenotype information across samples.The phenotypes sex, tissue, sequencing strategy, and sample source have been predicted across the ~70,000 samples currently available in [recount](https://jhubiostatistics.shinyapps.io/recount/).
 
 ## Installation
 
-You can install phenopredict from github with:
+You can install phenopredict from GitHub with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("leekgroup/phenopredict")
 ```
 
-## Example
+## Examples using phenopredict
 
-This is a basic example which shows you how to solve a common problem:
+Details of how the predicted phenotypes previously generated for the [recount data](https://jhubiostatistics.shinyapps.io/recount/)) are [available on GitHub](https://github.com/ShanEllis/phenopredict_phenotypes).
+
+
+## Adding predicted phenotypes in recount
+
+If you're looking to find the phenotype information previously generated across the recount samples, an example of how to use `add_predictions()` within recount is provided below.
 
 ```{r example}
-## basic example code
+library('recount')
+
+download_study('ERP001942', type='rse-gene')
+load(file.path('ERP001942', 'rse_gene.Rdata'))
+rse <- scale_counts(rse_gene)
+
+rse_with_pred <- add_predictions(rse)
 ```

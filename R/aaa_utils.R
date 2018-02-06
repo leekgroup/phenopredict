@@ -1,4 +1,9 @@
 #' @importFrom quadprog solve.QP
+
+## both functions' below are borrowed from the minfi
+## bioconductor package
+##
+
 projectCellType = function (Y,
                             coefCellType,
                             contrastCellType = NULL,

@@ -34,7 +34,8 @@
 #'
 #' @export
 #'
-#' @examples
+#' @exa
+mples
 #'
 #' library('GenomicRanges')
 #' library('dplyr')
@@ -59,8 +60,9 @@
 #' inputdata <- filter_regions(expression=exp, regiondata=regions,
 #' 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
-filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL,
-	phenotype=NULL, covariates=NULL,type=c("factor", "numeric"), numRegions=100){
+filter_regions <- function(expression=NULL, regiondata=NULL,
+                           phenodata=NULL, phenotype=NULL, covariates=NULL,
+                           type=c("factor", "numeric"), numRegions=100){
 
 	requireNamespace("limma", quietly=TRUE)
 	requireNamespace("GenomicRanges", quietly=TRUE)
@@ -71,6 +73,7 @@ filter_regions <- function(expression=NULL, regiondata=NULL ,phenodata=NULL,
 	# requireNamespace("genefilter", quietly=TRUE)
 
 	## first, some checks
+
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(is.null(regiondata)) {

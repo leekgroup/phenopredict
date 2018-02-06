@@ -21,6 +21,7 @@
 #' @importFrom magrittr %>%
 #'
 #' @export
+
 #' @examples
 #'
 #' library('GenomicRanges')

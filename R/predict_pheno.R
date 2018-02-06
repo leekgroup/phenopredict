@@ -101,7 +101,7 @@ predict_pheno <- function(inputdata_test=NULL, phenodata=NULL, phenotype=NULL,
 	type <- match.arg(type,c("factor", "numeric") )
 
 	if(type=="factor"){
-		# requireNamespace("minfi", quietly=TRUE)
+	  # requireNamespace("minfi", quietly=TRUE)
 		# define possible predictions
 		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")

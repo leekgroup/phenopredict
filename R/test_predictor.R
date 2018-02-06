@@ -99,7 +99,7 @@ test_predictor <- function(inputdata=NULL ,phenodata=NULL,
 	## predictions
 	if(type=="factor"){
 		# define possible predictions
-		possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
+	  possibles = levels(droplevels(as.factor(phenodata[,phenotype])))
 		possNA = c(possibles,"Unassigned")
 		# make predictions
 		projectCellType(Y=expressiondata,

@@ -10,12 +10,13 @@ vignette: >
 ---
 
 ```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+library(phenopredict)
 ## Track time spent on making the vignette
 startTime <- Sys.time()
 ```
 # Load libraries
 
-```{r load-packages, message = FALSE, warning = FALSE}
+```{r load-packages, message = FALSE, warning = FALSE, eval = FALSE}
 ## load libraries
 library('devtools')
 install_github("leekgroup/phenopredict")

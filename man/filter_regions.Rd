@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_regions.R
 \name{filter_regions}
 \alias{filter_regions}
-\title{Filters regions from prediction set to be used to build the predctor for a 
+\title{Filters regions from prediction set to be used to build the predctor for a
 phenotype of interest}
 \usage{
 filter_regions(expression = NULL, regiondata = NULL, phenodata = NULL,
@@ -10,13 +10,13 @@ filter_regions(expression = NULL, regiondata = NULL, phenodata = NULL,
   numRegions = 100)
 }
 \arguments{
-\item{expression}{expression data where regions are in rows and samples are 
+\item{expression}{expression data where regions are in rows and samples are
 in columns \code{expression}}
 
 \item{regiondata}{A GenomicRanges object in which  \code{regiondata}}
 
-\item{phenodata}{phenotype data with samples in rows and corresponding 
-phenotype 
+\item{phenodata}{phenotype data with samples in rows and corresponding
+phenotype
 information in columns  \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
@@ -26,17 +26,17 @@ information in columns  \code{phenodata}}
 \item{type}{The class of the phenotype of interest (numeric, factor)
 \code{type}}
 
-\item{numRegions}{The number of regions per class of variable of interest 
+\item{numRegions}{The number of regions per class of variable of interest
 to pull out from each chromosome (default: 100) \code{numRegions}}
 }
 \value{
-The selected regions, the coverage matrix, and the region info 
+The selected regions, the coverage matrix, and the region info
 to be used for prediction
 }
 \description{
 This function takes phenotype of interest (sex, tissue type, etc.)
-input by the user and uses a linear model (accounting for covariates, 
-if provided) to filter those expressed regions that best predict the 
+input by the user and uses a linear model (accounting for covariates,
+if provided) to filter those expressed regions that best predict the
 phenotype of interest. This is necessary when expression data are provided
 in chunks or broken down by chromosome. These regions can then be merged together
 with merge_regions() and are then used downstream for prediction. Default filters
@@ -53,7 +53,7 @@ regions <- GRanges(seqnames = 'chr2', IRanges(
      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
 
 ## make up some expression data for 9 rows and 30 people
-data(sysdata, package='phenopredict')   
+data(sysdata, package='phenopredict')
 ## includes R object 'cm'
 exp= cm[1:length(regions),1:30]
 

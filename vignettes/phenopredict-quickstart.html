@@ -11,7 +11,6 @@
 
 <meta name="author" content="Shannon E. Ellis" />
 
-<meta name="date" content="2017-12-14" />
 
 <title>phenopredict quick start guide</title>
 
@@ -117,7 +116,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">phenopredict quick start guide</h1>
 <p class="author-name">Shannon E. Ellis</p>
-<h4 class="date"><em>14 December 2017</em></h4>
+<h4 class="date"><em>6 February 2018</em></h4>
 
 </div>
 
@@ -251,125 +250,151 @@ table(predictions)</code></pre>
 <h1><span class="header-section-number">8</span> Vignette information</h1>
 <pre class="r"><code>## Time spent creating this report:
 diff(c(startTime, Sys.time()))</code></pre>
-<pre><code>## Time difference of 1.389125 secs</code></pre>
+<pre><code>## Time difference of 2.147754 secs</code></pre>
 <pre class="r"><code>## Date this report was generated
 message(Sys.time())</code></pre>
-<pre><code>## 2017-12-14 13:00:27</code></pre>
+<pre><code>## Warning in as.POSIXlt.POSIXct(x, tz): unknown timezone 'default/America/New_York'</code></pre>
+<pre><code>## 2018-02-06 19:03:57</code></pre>
 <pre class="r"><code>## Reproducibility info
 options(width = 120)
 devtools::session_info()</code></pre>
 <pre><code>## Session info ----------------------------------------------------------------------------------------------------------</code></pre>
-<pre><code>##  setting  value                                      
-##  version  R version 3.4.0 Patched (2017-05-16 r72696)
-##  system   x86_64, linux-gnu                          
-##  ui       X11                                        
-##  language (EN)                                       
-##  collate  en_US.UTF-8                                
-##  tz       &lt;NA&gt;                                       
-##  date     2017-12-14</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.4.2 (2017-09-28)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  C                           
+##  tz       &lt;NA&gt;                        
+##  date     2018-02-06</code></pre>
 <pre><code>## Packages --------------------------------------------------------------------------------------------------------------</code></pre>
-<pre><code>##  package              * version  date       source                                 
-##  annotate               1.54.0   2017-05-19 Bioconductor                           
-##  AnnotationDbi          1.38.2   2017-07-28 Bioconductor                           
-##  assertthat             0.2.0    2017-04-11 CRAN (R 3.4.0)                         
-##  backports              1.1.2    2017-12-13 CRAN (R 3.4.0)                         
-##  base                 * 3.4.0    2017-05-18 local                                  
-##  base64                 2.0      2016-05-10 CRAN (R 3.4.0)                         
-##  beanplot               1.2      2014-09-19 CRAN (R 3.4.0)                         
-##  bindr                  0.1      2016-11-13 CRAN (R 3.4.0)                         
-##  bindrcpp               0.2      2017-06-17 CRAN (R 3.4.0)                         
-##  Biobase                2.36.2   2017-05-18 Bioconductor                           
-##  BiocGenerics           0.22.1   2017-10-07 Bioconductor                           
-##  BiocParallel           1.10.1   2017-05-19 Bioconductor                           
-##  BiocStyle            * 2.6.1    2017-12-14 Bioconductor                           
-##  biomaRt                2.32.1   2017-06-10 Bioconductor                           
-##  Biostrings             2.44.2   2017-07-22 Bioconductor                           
-##  bit                    1.1-12   2014-04-09 CRAN (R 3.4.0)                         
-##  bit64                  0.9-7    2017-05-08 CRAN (R 3.4.0)                         
-##  bitops                 1.0-6    2013-08-17 CRAN (R 3.4.0)                         
-##  blob                   1.1.0    2017-06-17 CRAN (R 3.4.0)                         
-##  bookdown               0.5      2017-08-20 CRAN (R 3.4.1)                         
-##  broom                  0.4.3    2017-11-20 CRAN (R 3.4.3)                         
-##  bumphunter             1.20.0   2017-12-14 Bioconductor                           
-##  cellranger             1.1.0    2016-07-27 CRAN (R 3.4.0)                         
-##  codetools              0.2-15   2016-10-05 CRAN (R 3.4.0)                         
-##  colorspace             1.3-2    2016-12-14 CRAN (R 3.4.0)                         
-##  compiler               3.4.0    2017-05-18 local                                  
-##  curl                   3.1      2017-12-12 CRAN (R 3.4.0)                         
-##  data.table             1.10.4-3 2017-10-27 CRAN (R 3.4.0)                         
-##  datasets             * 3.4.0    2017-05-18 local                                  
-##  DBI                    0.7      2017-06-18 CRAN (R 3.4.0)                         
-##  DelayedArray           0.2.7    2017-06-04 Bioconductor                           
-##  devtools             * 1.13.4   2017-11-09 CRAN (R 3.4.0)                         
-##  digest                 0.6.12   2017-01-27 CRAN (R 3.4.0)                         
-##  doRNG                  1.6.6    2017-04-10 CRAN (R 3.4.0)                         
-##  dplyr                * 0.7.4    2017-09-28 CRAN (R 3.4.0)                         
-##  evaluate               0.10.1   2017-06-24 CRAN (R 3.4.0)                         
-##  forcats                0.2.0    2017-01-23 CRAN (R 3.4.1)                         
-##  foreach                1.4.4    2017-12-12 CRAN (R 3.4.0)                         
-##  foreign                0.8-67   2016-09-13 CRAN (R 3.4.0)                         
-##  gdata                  2.18.0   2017-06-06 CRAN (R 3.4.0)                         
-##  genefilter             1.58.1   2017-05-19 Bioconductor                           
-##  GenomeInfoDb           1.12.3   2017-10-06 Bioconductor                           
-##  GenomeInfoDbData       0.99.0   2017-05-18 Bioconductor                           
-##  GenomicAlignments      1.12.2   2017-08-18 Bioconductor                           
-##  GenomicFeatures        1.28.5   2017-09-21 Bioconductor                           
-##  GenomicRanges          1.28.6   2017-10-05 Bioconductor                           
-##  GEOquery               2.42.0   2017-05-19 Bioconductor                           
-##  ggplot2              * 2.2.1    2016-12-30 CRAN (R 3.4.0)                         
-##  git2r                  0.19.0   2017-07-19 CRAN (R 3.4.0)                         
-##  glue                   1.2.0    2017-10-29 CRAN (R 3.4.0)                         
-##  graphics             * 3.4.0    2017-05-18 local                                  
-##  grDevices            * 3.4.0    2017-05-18 local                                  
-##  grid                   3.4.0    2017-05-18 local                                  
-##  gtable                 0.2.0    2016-02-26 CRAN (R 3.4.0)                         
-##  gtools                 3.5.0    2015-05-29 CRAN (R 3.4.0)                         
-##  haven                  1.1.0    2017-07-09 CRAN (R 3.4.1)                         
-##  hms                    0.4.0    2017-11-23 CRAN (R 3.4.0)                         
-##  htmltools              0.3.6    2017-04-28 CRAN (R 3.4.0)                         
-##  httr                   1.3.1    2017-08-20 CRAN (R 3.4.0)                         
-##  illuminaio             0.18.0   2017-05-19 Bioconductor                           
-##  IRanges                2.10.5   2017-10-09 Bioconductor                           
-##  iterators              1.0.9    2017-12-12 CRAN (R 3.4.0)                         
-##  jsonlite               1.5      2017-06-01 CRAN (R 3.4.0)                         
-##  knitr                  1.17     2017-08-10 CRAN (R 3.4.0)                         
-##  lattice                0.20-35  2017-03-25 CRAN (R 3.4.0)                         
-##  lazyeval               0.2.1    2017-10-29 CRAN (R 3.4.0)                         
-##  limma                  3.32.10  2017-10-14 Bioconductor                           
-##  locfit                 1.5-9.1  2013-04-20 CRAN (R 3.4.0)                         
-##  lubridate              1.6.0    2016-09-13 CRAN (R 3.4.1)                         
-##  magrittr               1.5      2014-11-22 CRAN (R 3.4.0)                         
-##  MASS                   7.3-47   2017-02-26 CRAN (R 3.4.0)                         
-##  Matrix                 1.2-10   2017-05-03 CRAN (R 3.4.0)                         
-##  matrixStats            0.52.2   2017-04-14 CRAN (R 3.4.0)                         
-##  mclust                 5.4      2017-11-22 CRAN (R 3.4.0)                         
-##  memoise                1.1.0    2017-04-21 CRAN (R 3.4.0)                         
-##  methods              * 3.4.0    2017-05-18 local                                  
-##  minfi                  1.22.1   2017-05-19 Bioconductor                           
-##  mnormt                 1.5-5    2016-10-15 CRAN (R 3.4.0)                         
-##  modelr                 0.1.1    2017-07-24 CRAN (R 3.4.1)                         
-##  multtest               2.32.0   2017-05-19 Bioconductor                           
-##  munsell                0.4.3    2016-02-13 CRAN (R 3.4.0)                         
-##  nlme                   3.1-131  2017-02-06 CRAN (R 3.4.0)                         
-##  nor1mix                1.2-3    2017-08-30 CRAN (R 3.4.0)                         
-##  openssl                0.9.9    2017-11-10 CRAN (R 3.4.0)                         
-##  parallel               3.4.0    2017-05-18 local                                  
-##  phenopredict         * 0.99.0   2017-12-14 Github (leekgroup/phenopredict@96b7869)
-##  pkgconfig              2.0.1    2017-03-21 CRAN (R 3.4.0)                         
-##  pkgmaker               0.22     2014-05-14 CRAN (R 3.4.0)                         
-##  plyr                   1.8.4    2016-06-08 CRAN (R 3.4.0)                         
-##  preprocessCore         1.38.1   2017-05-18 Bioconductor                           
-##  psych                  1.7.8    2017-09-09 CRAN (R 3.4.2)                         
-##  purrr                * 0.2.4    2017-10-18 CRAN (R 3.4.0)                         
-##  quadprog               1.5-5    2013-04-17 CRAN (R 3.4.0)                         
-##  R6                     2.2.2    2017-06-17 CRAN (R 3.4.0)                         
-##  RColorBrewer           1.1-2    2014-12-07 CRAN (R 3.4.0)                         
-##  Rcpp                   0.12.14  2017-11-23 CRAN (R 3.4.0)                         
-##  RCurl                  1.95-4.8 2016-03-01 CRAN (R 3.4.0)                         
-##  readr                * 1.1.1    2017-05-16 CRAN (R 3.4.0)                         
-##  readxl                 1.0.0    2017-04-18 CRAN (R 3.4.0)                         
-##  registry               0.5      2017-12-03 CRAN (R 3.4.0)                         
-##  [ reached getOption(&quot;max.print&quot;) -- omitted 33 rows ]</code></pre>
+<pre><code>##  package              * version   date       source        
+##  annotate               1.56.1    2017-11-13 Bioconductor  
+##  AnnotationDbi          1.40.0    2017-10-31 Bioconductor  
+##  assertthat             0.2.0     2017-04-11 cran (@0.2.0) 
+##  backports              1.1.2     2017-12-13 CRAN (R 3.4.3)
+##  base                 * 3.4.2     2017-10-04 local         
+##  base64                 2.0       2016-05-10 CRAN (R 3.4.0)
+##  beanplot               1.2       2014-09-19 CRAN (R 3.4.0)
+##  bindr                  0.1       2016-11-13 CRAN (R 3.4.0)
+##  bindrcpp               0.2       2017-06-17 CRAN (R 3.4.0)
+##  Biobase                2.38.0    2017-10-31 Bioconductor  
+##  BiocGenerics           0.24.0    2017-10-31 Bioconductor  
+##  BiocParallel           1.12.0    2017-10-31 Bioconductor  
+##  BiocStyle            * 2.6.1     2017-11-30 Bioconductor  
+##  biomaRt                2.34.2    2018-01-20 Bioconductor  
+##  Biostrings             2.46.0    2017-10-31 Bioconductor  
+##  bit                    1.1-12    2014-04-09 CRAN (R 3.4.0)
+##  bit64                  0.9-7     2017-05-08 CRAN (R 3.4.0)
+##  bitops                 1.0-6     2013-08-17 CRAN (R 3.4.0)
+##  blob                   1.1.0     2017-06-17 CRAN (R 3.4.0)
+##  bookdown               0.6       2018-01-25 CRAN (R 3.4.3)
+##  broom                  0.4.3     2017-11-20 CRAN (R 3.4.3)
+##  bumphunter             1.20.0    2017-10-31 Bioconductor  
+##  codetools              0.2-15    2016-10-05 CRAN (R 3.4.2)
+##  commonmark             1.4       2017-09-01 CRAN (R 3.4.1)
+##  compiler               3.4.2     2017-10-04 local         
+##  crayon                 1.3.4     2017-09-16 CRAN (R 3.4.1)
+##  data.table             1.10.4-3  2017-10-27 CRAN (R 3.4.2)
+##  datasets             * 3.4.2     2017-10-04 local         
+##  DBI                    0.7       2017-06-18 CRAN (R 3.4.0)
+##  DelayedArray           0.4.1     2017-11-07 Bioconductor  
+##  desc                   1.1.1     2017-08-03 CRAN (R 3.4.1)
+##  devtools               1.13.4    2017-11-09 CRAN (R 3.4.2)
+##  digest                 0.6.15    2018-01-28 CRAN (R 3.4.3)
+##  doRNG                  1.6.6     2017-04-10 CRAN (R 3.4.0)
+##  dplyr                  0.7.4     2017-09-28 CRAN (R 3.4.2)
+##  evaluate               0.10.1    2017-06-24 CRAN (R 3.4.1)
+##  foreach                1.4.4     2017-12-12 CRAN (R 3.4.3)
+##  foreign                0.8-69    2017-06-22 CRAN (R 3.4.2)
+##  gdata                  2.18.0    2017-06-06 cran (@2.18.0)
+##  genefilter             1.60.0    2017-10-31 Bioconductor  
+##  GenomeInfoDb           1.14.0    2017-10-31 Bioconductor  
+##  GenomeInfoDbData       1.0.0     2018-02-06 Bioconductor  
+##  GenomicAlignments      1.14.1    2017-11-18 Bioconductor  
+##  GenomicFeatures        1.30.3    2018-02-02 Bioconductor  
+##  GenomicRanges          1.30.1    2017-12-21 Bioconductor  
+##  GEOquery               2.46.14   2018-02-01 Bioconductor  
+##  glue                   1.2.0     2017-10-29 CRAN (R 3.4.2)
+##  graphics             * 3.4.2     2017-10-04 local         
+##  grDevices            * 3.4.2     2017-10-04 local         
+##  grid                   3.4.2     2017-10-04 local         
+##  gtools                 3.5.0     2015-05-29 cran (@3.5.0) 
+##  hms                    0.4.1     2018-01-24 CRAN (R 3.4.3)
+##  htmltools              0.3.6     2017-04-28 CRAN (R 3.4.0)
+##  httr                   1.3.1     2017-08-20 CRAN (R 3.4.1)
+##  illuminaio             0.20.0    2017-10-31 Bioconductor  
+##  IRanges                2.12.0    2017-10-31 Bioconductor  
+##  iterators              1.0.9     2017-12-12 CRAN (R 3.4.3)
+##  knitr                  1.19      2018-01-29 CRAN (R 3.4.3)
+##  lattice                0.20-35   2017-03-25 CRAN (R 3.4.2)
+##  limma                  3.34.8    2018-02-05 Bioconductor  
+##  locfit                 1.5-9.1   2013-04-20 CRAN (R 3.4.0)
+##  magrittr               1.5       2014-11-22 CRAN (R 3.4.0)
+##  MASS                   7.3-48    2017-12-25 CRAN (R 3.4.3)
+##  Matrix                 1.2-12    2017-11-15 CRAN (R 3.4.2)
+##  matrixStats            0.53.0    2018-01-24 CRAN (R 3.4.3)
+##  mclust                 5.4       2017-11-22 CRAN (R 3.4.3)
+##  memoise                1.1.0     2017-04-21 CRAN (R 3.4.0)
+##  methods              * 3.4.2     2017-10-04 local         
+##  minfi                  1.24.0    2017-10-31 Bioconductor  
+##  mnormt                 1.5-5     2016-10-15 CRAN (R 3.4.0)
+##  multtest               2.34.0    2017-10-31 Bioconductor  
+##  nlme                   3.1-131   2017-02-06 CRAN (R 3.4.2)
+##  nor1mix                1.2-3     2017-08-30 CRAN (R 3.4.1)
+##  openssl                0.9.9     2017-11-10 CRAN (R 3.4.2)
+##  parallel               3.4.2     2017-10-04 local         
+##  phenopredict         * 0.99.0    &lt;NA&gt;       Bioconductor  
+##  pillar                 1.1.0     2018-01-14 CRAN (R 3.4.3)
+##  pkgconfig              2.0.1     2017-03-21 CRAN (R 3.4.0)
+##  pkgmaker               0.22      2014-05-14 CRAN (R 3.4.0)
+##  plyr                   1.8.4     2016-06-08 CRAN (R 3.4.0)
+##  preprocessCore         1.40.0    2017-10-31 Bioconductor  
+##  prettyunits            1.0.2     2015-07-13 CRAN (R 3.4.0)
+##  progress               1.1.2     2016-12-14 CRAN (R 3.4.0)
+##  psych                  1.7.8     2017-09-09 CRAN (R 3.4.0)
+##  purrr                  0.2.4     2017-10-18 CRAN (R 3.4.2)
+##  quadprog               1.5-5     2013-04-17 CRAN (R 3.4.0)
+##  R6                     2.2.2     2017-06-17 CRAN (R 3.4.0)
+##  RColorBrewer           1.1-2     2014-12-07 CRAN (R 3.4.0)
+##  Rcpp                   0.12.15   2018-01-20 CRAN (R 3.4.3)
+##  RCurl                  1.95-4.10 2018-01-04 CRAN (R 3.4.3)
+##  readr                  1.1.1     2017-05-16 CRAN (R 3.4.0)
+##  registry               0.5       2017-12-03 CRAN (R 3.4.3)
+##  reshape                0.8.7     2017-08-06 CRAN (R 3.4.1)
+##  reshape2               1.4.3     2017-12-11 CRAN (R 3.4.3)
+##  rlang                  0.1.6     2017-12-21 CRAN (R 3.4.3)
+##  rmarkdown              1.8       2017-11-17 CRAN (R 3.4.2)
+##  RMySQL                 0.10.13   2017-08-14 CRAN (R 3.4.1)
+##  rngtools               1.2.4     2014-03-06 CRAN (R 3.4.0)
+##  roxygen2               6.0.1     2017-02-06 CRAN (R 3.4.0)
+##  rprojroot              1.3-2     2018-01-03 CRAN (R 3.4.3)
+##  Rsamtools              1.30.0    2017-10-31 Bioconductor  
+##  RSQLite                2.0       2017-06-19 CRAN (R 3.4.1)
+##  rstudioapi             0.7       2017-09-07 CRAN (R 3.4.1)
+##  rtracklayer            1.38.3    2018-01-23 Bioconductor  
+##  S4Vectors              0.16.0    2017-10-31 Bioconductor  
+##  siggenes               1.52.0    2017-10-31 Bioconductor  
+##  splines                3.4.2     2017-10-04 local         
+##  stats                * 3.4.2     2017-10-04 local         
+##  stats4                 3.4.2     2017-10-04 local         
+##  stringi                1.1.6     2017-11-17 cran (@1.1.6) 
+##  stringr                1.2.0     2017-02-18 CRAN (R 3.4.0)
+##  SummarizedExperiment   1.8.1     2017-12-19 Bioconductor  
+##  survival               2.41-3    2017-04-04 CRAN (R 3.4.2)
+##  testthat               2.0.0     2017-12-13 CRAN (R 3.4.3)
+##  tibble                 1.4.2     2018-01-22 CRAN (R 3.4.3)
+##  tidyr                  0.8.0     2018-01-29 CRAN (R 3.4.3)
+##  tools                  3.4.2     2017-10-04 local         
+##  utils                * 3.4.2     2017-10-04 local         
+##  withr                  2.1.1     2017-12-19 CRAN (R 3.4.3)
+##  xfun                   0.1       2018-01-22 CRAN (R 3.4.3)
+##  XML                    3.98-1.9  2017-06-19 CRAN (R 3.4.1)
+##  xml2                   1.2.0     2018-01-24 CRAN (R 3.4.3)
+##  xtable                 1.8-2     2016-02-05 CRAN (R 3.4.0)
+##  XVector                0.18.0    2017-10-31 Bioconductor  
+##  yaml                   2.1.16    2017-12-12 CRAN (R 3.4.3)
+##  zlibbioc               1.24.0    2017-10-31 Bioconductor</code></pre>
 <p>Code for creating the vignette</p>
 <pre class="r"><code>## Create the vignette
 library('rmarkdown')

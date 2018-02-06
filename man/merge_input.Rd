@@ -2,22 +2,22 @@
 % Please edit documentation in R/merge_input.R
 \name{merge_input}
 \alias{merge_input}
-\title{Uses output from select_regions() to merge output before building the 
+\title{Uses output from select_regions() to merge output before building the
 predictor}
 \usage{
 merge_input(inputdata_list = NULL)
 }
 \arguments{
-\item{inputdata_list}{list out output objects from select_regions() 
+\item{inputdata_list}{list out output objects from select_regions()
 \code{inputdata_list}}
 }
 \value{
 merged inputdata across multiple runs of select_regions()
 }
 \description{
-This function takes the output from multiple executions of select_regions() 
+This function takes the output from multiple executions of select_regions()
 and merges the output before building and running the predictor. Objects
-output are the merged output from select_regions but contain the same 
+output are the merged output from select_regions but contain the same
 objects.
 }
 \examples{
@@ -26,7 +26,7 @@ library('GenomicRanges')
 library('dplyr')
 ## make up some expression data for 9 rows and 30 people
 data(sysdata, package='phenopredict')
-## includes R object 'cm'   
+## includes R object 'cm'
 
 ## Make up some some region data
 regions <- GRanges(seqnames = 'chr2', IRanges(

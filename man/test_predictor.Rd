@@ -10,7 +10,7 @@ test_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
 \arguments{
 \item{inputdata}{output from filter_regions() \code{inputdata}}
 
-\item{phenodata}{data set with phenotype information; samples in rows, 
+\item{phenodata}{data set with phenotype information; samples in rows,
 variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
@@ -26,10 +26,10 @@ variables in columns \code{phenodata}}
 list of actual and predicted phenotype, and summarization of output
 }
 \description{
-This function takes the expression data input to 
+This function takes the expression data input to
 build_predictor() and the coefficient estimates from
-build_predictor() for phenotype prediction. The known 
-phenotypes are also input for comparison and 
+build_predictor() for phenotype prediction. The known
+phenotypes are also input for comparison and
 asseessment of predictor accuracy.
 }
 \examples{
@@ -43,7 +43,7 @@ regions <- GRanges(seqnames = 'chr2', IRanges(
      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
 
 ## make up some expression data for 9 rows and 30 people
-data(sysdata, package='phenopredict')   
+data(sysdata, package='phenopredict')
 ## includes R object 'cm'
 exp= cm[1:length(regions),1:30]
 
@@ -58,13 +58,13 @@ inputdata <- filter_regions(expression=exp, regiondata=regions,
 	phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
 ## build phenotype predictor
-predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, 
+predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno,
 	phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 
 ## determine resubstitution error
 ## carry out prediction in training data set
-predictions_test<-test_predictor(inputdata=inputdata ,phenodata=pheno, 
-	phenotype="sex", covariates=NULL,type="factor",predictordata=predictor)	
+predictions_test<-test_predictor(inputdata=inputdata ,phenodata=pheno,
+	phenotype="sex", covariates=NULL,type="factor",predictordata=predictor)
 }
 \keyword{phenotype,}
 \keyword{prediction,}

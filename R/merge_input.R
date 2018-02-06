@@ -1,34 +1,33 @@
 
-#' Uses output from select_regions() to merge output before building the 
-#' predictor   
-#' 
-#' This function takes the output from multiple executions of select_regions() 
-#' and merges the output before building and running the predictor. Objects
-#' output are the merged output from select_regions but contain the same 
-#' objects. 
+#' Uses output from select_regions() to merge output before building the
+#' predictor
 #'
-#' @param inputdata_list list out output objects from select_regions() 
+#' This function takes the output from multiple executions of select_regions()
+#' and merges the output before building and running the predictor. Objects
+#' output are the merged output from select_regions but contain the same
+#' objects.
+#'
+#' @param inputdata_list list out output objects from select_regions()
 #' \code{inputdata_list}
 #'
 #' @return merged inputdata across multiple runs of select_regions()
 #'
 #' @keywords phenotype, merge, prediction, expression
 #'
-#' @import dplyr 
-#' @importFrom plyr ldply
+#' @importFrom plyr ldply .
 #' @importFrom purrr map
 #' @importFrom utils globalVariables
 #' @importFrom GenomicRanges GRangesList
+#' @importFrom magrittr %>%
 #'
 #' @export
-#'
 #' @examples
 #'
 #' library('GenomicRanges')
 #' library('dplyr')
 #' ## make up some expression data for 9 rows and 30 people
 #' data(sysdata, package='phenopredict')
-#' ## includes R object 'cm'   
+#' ## includes R object 'cm'
 #'
 #' ## Make up some some region data
 #' regions <- GRanges(seqnames = 'chr2', IRanges(
@@ -55,16 +54,16 @@
 #' ## merge objects
 #' inputdata_merged<-merge_input(inputdata_list=list(inputdata1, inputdata2))
 
-merge_input <- function(inputdata_list=NULL){	
+merge_input <- function(inputdata_list=NULL){
 	requireNamespace("dplyr", quietly=TRUE)
 	requireNamespace("purrr", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
-	requireNamespace("utils", quietly=TRUE)	
-	requireNamespace("GenomicRanges", quietly=TRUE)	
-		
-		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>% 
+	requireNamespace("utils", quietly=TRUE)
+	requireNamespace("GenomicRanges", quietly=TRUE)
+
+		purrr::map(inputdata_list, function(x){return(x$covmat)}) %>%
 			plyr::ldply(., data.frame) -> covmatrix
-		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>% 
+		purrr::map(inputdata_list, function(x){return(x$regiondata)}) %>%
 			GRangesList %>% unlist -> regiondata
 		# this also works (Thanks, Leo!):
 		# do.call(c, map(inputdata_list, function(x){return(x$regiondata)}) ) -> regiondata

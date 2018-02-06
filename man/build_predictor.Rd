@@ -10,29 +10,29 @@ build_predictor(inputdata = NULL, phenodata = NULL, phenotype = NULL,
 \arguments{
 \item{inputdata}{output from filter_regions() \code{inputdata}}
 
-\item{phenodata}{data set with phenotype information; samples in rows, 
+\item{phenodata}{data set with phenotype information; samples in rows,
 variables in columns \code{phenodata}}
 
 \item{phenotype}{phenotype of interest \code{phenotype}}
 
 \item{covariates}{Which covariates to include in model \code{covariates}}
 
-\item{type}{The class of the phenotype of interest (numeric, factor) 
+\item{type}{The class of the phenotype of interest (numeric, factor)
 \code{type}}
 
-\item{numRegions}{The number of regions per class of variable of interest 
+\item{numRegions}{The number of regions per class of variable of interest
 to pull out from each chromosome (default: 10) \code{numRegions}}
 }
 \value{
-An n x m data.frame of coefficient estimates and region indices 
-for each of the regions included from filter_regions() 
+An n x m data.frame of coefficient estimates and region indices
+for each of the regions included from filter_regions()
 along with regiondata and indices for trainingProbes
 }
 \description{
-This function takes the output from filter_regions() and builds the 
-phenotype predictor to be used for phenotype prediction in a new 
+This function takes the output from filter_regions() and builds the
+phenotype predictor to be used for phenotype prediction in a new
 data set. This function outputs the fits (coefficient estimates, `coefEsts`)
-from the model for the selectied regions as well as the rows selected 
+from the model for the selectied regions as well as the rows selected
 (`trainingProbes`) from the input data.
 }
 \examples{
@@ -46,7 +46,7 @@ regions <- GRanges(seqnames = 'chr2', IRanges(
      end = c(29462417:29462419, 29923338:29923340, 29917714:29917716)))
 
 ## make up some expression data for 9 rows and 30 people
-data(sysdata, package='phenopredict')   
+data(sysdata, package='phenopredict')
 ## includes R object 'cm'
 exp= cm[1:length(regions),1:30]
 
@@ -58,11 +58,11 @@ colnames(pheno) <- c("sex","age")
 
 ## filter regions to be used to build the predictor
 inputdata <- filter_regions(expression=exp, regiondata=regions,
-phenodata=pheno, phenotype="sex", covariates=NULL,type="factor", 
+phenodata=pheno, phenotype="sex", covariates=NULL,type="factor",
 numRegions=2)
 
 ## build phenotype predictor
-predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno, 
+predictor<-build_predictor(inputdata=inputdata ,phenodata=pheno,
 	phenotype="sex", covariates=NULL,type="factor", numRegions=2)
 }
 \keyword{coefficient}

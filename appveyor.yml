@@ -16,9 +16,8 @@ cache:
 # Adapt as necessary starting from here
 
 build_script:
+  - travis-tool.sh bioc_install GenomeInfoDbData
   - travis-tool.sh install_deps
-  - ./travis-tool.sh install_bioc_deps
-  - BiocInstall GenomeInfoDbData
 
 test_script:
   - travis-tool.sh run_tests
